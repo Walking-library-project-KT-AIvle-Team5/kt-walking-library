@@ -120,7 +120,9 @@ kt-walking-library/
 
 ---
 
-
+<div align="center">
+  <img src="docs/images/3.png" alt="Event Storming" width="800"/>
+</div>
 
 
 
