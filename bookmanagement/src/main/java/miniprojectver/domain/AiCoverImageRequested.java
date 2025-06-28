@@ -1,5 +1,5 @@
 package miniprojectver.domain;
-//check
+//check check
 import java.time.LocalDate;
 import java.util.*;
 import lombok.*;
