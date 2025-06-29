@@ -4,6 +4,7 @@ import lombok.Data;
 import miniprojectver.PointmanagementApplication;
 import miniprojectver.command.*;
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Optional;
 
 @Entity
@@ -127,6 +128,8 @@ public class Point {
         PointDeducted deducted = new PointDeducted(point);
         deducted.setAmount(cmd.getAmount());
         deducted.setBookId(cmd.getBookId());
+        deducted.setAuthorId(cmd.getAuthorId());     // ✅ authorId 설정
+        deducted.setPurchasedAt(new Date());         // ✅ 구매 시각 설정
         deducted.publishAfterCommit();
     }
 }

@@ -17,5 +17,7 @@ public class UsePointCommand {
     /** 차감할 포인트 (양수) */
     private Integer amount;
 
+    private String authorId;
+
     private String correlationId;
 }
