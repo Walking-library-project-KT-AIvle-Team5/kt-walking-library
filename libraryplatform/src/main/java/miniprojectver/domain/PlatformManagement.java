@@ -37,31 +37,40 @@ public class PlatformManagement {
     public static void checkSubscription(
         BookPurchaseRequested bookPurchaseRequested
     ) {
-        //implement business logic here:
+        String userId = bookPurchaseRequested.getUserId();
 
-        /** Example 1:  new item 
-        PlatformManagement platformManagement = new PlatformManagement();
-        repository().save(platformManagement);
+        // FetchSubscriberListRepository 가져오기
+        FetchSubscriberListRepository subscriberRepo =
+            LibraryplatformApplication.applicationContext.getBean(FetchSubscriberListRepository.class);
 
-        SubscriptionStatusChecked subscriptionStatusChecked = new SubscriptionStatusChecked(platformManagement);
-        subscriptionStatusChecked.publishAfterCommit();
-        */
+        // 해당 userId의 ACTIVE 구독 여부 확인
+        List<FetchSubscriberList> activeSubs = subscriberRepo.findByUserIdAndStatus(userId, "ACTIVE");
+        boolean isSubscribed = (activeSubs != null && !activeSubs.isEmpty());
 
-        /** Example 2:  finding and process
-        
+        // SubscriptionStatusChecked 이벤트 발행
+        SubscriptionStatusChecked event = new SubscriptionStatusChecked();
+        event.setUserId(userId);
+        event.setIsSubscribed(isSubscribed);
+        event.publishAfterCommit();
 
-        repository().findById(bookPurchaseRequested.get???()).ifPresent(platformManagement->{
-            
-            platformManagement // do something
-            repository().save(platformManagement);
-
-            SubscriptionStatusChecked subscriptionStatusChecked = new SubscriptionStatusChecked(platformManagement);
-            subscriptionStatusChecked.publishAfterCommit();
-
-         });
-        */
 
     }
+    
+    //>>> Clean Arch / Port Method
+    public static void sendPaymentRecommendation(PointUseFailed pointUseFailed) {
+
+    String userId = pointUseFailed.getUserId();
+
+    PlatformManagement platformManagement = new PlatformManagement();
+    platformManagement.setSubscribedUserIds(userId);
+    platformManagement.setRecommendationMessage("포인트가 부족합니다. 구독 요금제를 추천합니다.");
+
+    repository().save(platformManagement);
+
+    PaymentRecommendationMessageSent event = new PaymentRecommendationMessageSent(platformManagement);
+    event.publishAfterCommit();
+    }
+
     //>>> Clean Arch / Port Method
 
 }
