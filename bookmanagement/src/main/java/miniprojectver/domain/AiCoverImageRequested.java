@@ -1,5 +1,5 @@
 package miniprojectver.domain;
-
+//자동화
 import java.time.LocalDate;
 import java.util.*;
 import lombok.*;
