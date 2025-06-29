@@ -11,6 +11,7 @@ import lombok.Data;
 import miniprojectver.BookmanagementApplication;
 import miniprojectver.domain.BookRegistered;
 import miniprojectver.domain.MarkedAsBestseller;
+import miniprojectver.domain.Status;
 
 @Entity
 @Table(name = "Book_table")

@@ -5,6 +5,8 @@ import java.util.*;
 import lombok.*;
 import miniprojectver.domain.*;
 import miniprojectver.infra.AbstractEvent;
+import miniprojectver.domain.Status;
+
 
 //<<< DDD / Domain Event
 @Data
@@ -21,7 +23,7 @@ public class BookRegistered extends AbstractEvent {
     private String contents;
     private Date createAt;
     private Boolean isBestseller;
-    private status status;
+    private Status status;
     private Integer price;
 
     public BookRegistered(Book aggregate) {

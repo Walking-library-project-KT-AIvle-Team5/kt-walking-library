@@ -41,7 +41,7 @@ private Long authorId;
 private String content;    
     
     
-private New Enumeration status;    
+private ManuscriptStatus status;
     
     
 private Boolean imageRequested;    

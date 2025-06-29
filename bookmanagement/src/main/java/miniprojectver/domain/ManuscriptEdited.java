@@ -16,7 +16,7 @@ public class ManuscriptEdited extends AbstractEvent {
     private String title;
     private Long authorId;
     private String content;
-    private New Enumeration status;
+    private ManuscriptStatus status;
 
     public ManuscriptEdited(Manuscript aggregate){
         super(aggregate);
