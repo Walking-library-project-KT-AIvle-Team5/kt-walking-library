@@ -6,6 +6,7 @@ import miniprojectver.domain.*;
 import miniprojectver.infra.AbstractEvent;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @ToString
 public class SubscriptionRequested extends AbstractEvent {
 

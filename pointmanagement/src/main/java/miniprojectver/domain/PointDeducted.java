@@ -8,11 +8,12 @@ import miniprojectver.infra.AbstractEvent;
 
 //<<< DDD / Domain Event
 @Data
+@EqualsAndHashCode(callSuper = false)
 @ToString
 public class PointDeducted extends AbstractEvent {
 
     private String userId;
-    private Integer amountPoint;
+    private Integer amount;
     private String bookId;
     private String subscriptionId;
 

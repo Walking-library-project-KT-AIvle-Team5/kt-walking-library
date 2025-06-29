@@ -8,11 +8,12 @@ import miniprojectver.infra.AbstractEvent;
 
 //<<< DDD / Domain Event
 @Data
+@EqualsAndHashCode(callSuper = false)
 @ToString
 public class PointCharged extends AbstractEvent {
 
-    private Long userId;
-    private Integer amountPoint;
+    private String userId;
+    private Integer amount;
 
     public PointCharged(Point aggregate) {
         super(aggregate);
