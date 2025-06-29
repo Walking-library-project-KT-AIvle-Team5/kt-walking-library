@@ -1,14 +1,15 @@
 version: '2'
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:latest
+    image: confluentinc/cp-zookeeper:7.2.1
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - 2181:2181
+
   kafka:
-    image: confluentinc/cp-kafka:latest
+    image: confluentinc/cp-kafka:7.2.1
     container_name: my-kafka
     depends_on:
       - zookeeper
@@ -17,7 +18,7 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://my-kafka:29092,PLAINTEXT_HOST://my-kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://my-kafka:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -36,7 +37,7 @@ services:
     volumes:
       - ./auth:/usr/src
       - ./maven-repo:/root/.m2
-      
+
   dashboard:
     depends_on: 
       - kafka
@@ -50,7 +51,7 @@ services:
     volumes:
       - ./dashboard:/usr/src
       - ./maven-repo:/root/.m2
-      
+
   bookmanagement:
     depends_on: 
       - kafka
@@ -64,7 +65,7 @@ services:
     volumes:
       - ./bookmanagement:/usr/src
       - ./maven-repo:/root/.m2
-      
+
   pointmanagement:
     depends_on: 
       - kafka
@@ -78,7 +79,7 @@ services:
     volumes:
       - ./pointmanagement:/usr/src
       - ./maven-repo:/root/.m2
-      
+
   subscribermanagement:
     depends_on: 
       - kafka
@@ -92,7 +93,7 @@ services:
     volumes:
       - ./subscribermanagement:/usr/src
       - ./maven-repo:/root/.m2
-      
+
   libraryplatform:
     depends_on: 
       - kafka
@@ -106,7 +107,7 @@ services:
     volumes:
       - ./libraryplatform:/usr/src
       - ./maven-repo:/root/.m2
-      
+
   authormanagement:
     depends_on: 
       - kafka
@@ -120,4 +121,3 @@ services:
     volumes:
       - ./authormanagement:/usr/src
       - ./maven-repo:/root/.m2
-      

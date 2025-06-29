@@ -1,0 +1,26 @@
+# Maven
+target/
+maven-repo/
+
+# Logs
+*.log
+
+# Node
+node_modules/
+
+# Docker
+*.pid
+
+# VSCode / IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 기타
+*.class
+*.jar
+*.war
+*.iml
