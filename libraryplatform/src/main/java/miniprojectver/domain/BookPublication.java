@@ -34,19 +34,21 @@ public class BookPublication {
 
     private String contents;
 
-    private String status;
+    private String status; // "PENDING", "APPROVED", "REJECTED", "UNPUBLISHED"
 
     private Integer price;
 
     @PostUpdate
     public void onPostUpdate() {
-        BookUnpublished bookUnpublished = new BookUnpublished(this);
-        bookUnpublished.publishAfterCommit();
+        if ("UNPUBLISHED".equals(this.status)) {
+            BookUnpublished event = new BookUnpublished(this);
+            event.publishAfterCommit();
+        }
 
-        BookPublicationChecked bookPublicationChecked = new BookPublicationChecked(
-            this
-        );
-        bookPublicationChecked.publishAfterCommit();
+        if ("APPROVED".equals(this.status)) {
+            BookPublicationChecked event = new BookPublicationChecked(this);
+            event.publishAfterCommit();
+        }
     }
 
     public static BookPublicationRepository repository() {
@@ -60,25 +62,17 @@ public class BookPublication {
     public static void requestBookPublication(
         ManuscriptPublicationRequested manuscriptPublicationRequested
     ) {
-        //implement business logic here:
-
-        /** Example 1:  new item 
         BookPublication bookPublication = new BookPublication();
+        bookPublication.setTitle(manuscriptPublicationRequested.getTitle());
+        bookPublication.setSummaryContent("요약내용 자동생성"); // or 필요시 API 호출 등
+        bookPublication.setSummary(manuscriptPublicationRequested.getSummary());
+        bookPublication.setContents(manuscriptPublicationRequested.getContent());
+        bookPublication.setCategory(manuscriptPublicationRequested.getCategory());
+        bookPublication.setImagepath(manuscriptPublicationRequested.getImagePath());
+        bookPublication.setPrice(manuscriptPublicationRequested.getPrice());
+        bookPublication.setStatus("PENDING");
+
         repository().save(bookPublication);
-
-        */
-
-        /** Example 2:  finding and process
-        
-
-        repository().findById(manuscriptPublicationRequested.get???()).ifPresent(bookPublication->{
-            
-            bookPublication // do something
-            repository().save(bookPublication);
-
-
-         });
-        */
 
     }
     //>>> Clean Arch / Port Method
