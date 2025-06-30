@@ -15,9 +15,12 @@ public class BonusPointGranted extends AbstractEvent {
     private String userId;
     private Integer amount;
 
-    public BonusPointGranted(Point aggregate) {
-        super(aggregate);
-    }
+    public BonusPointGranted(Point aggregate, Integer amount) {
+    super(aggregate);
+    this.userId = aggregate.getUserId();
+    this.amount = amount;
+}
+
 
     public BonusPointGranted() {
         super();

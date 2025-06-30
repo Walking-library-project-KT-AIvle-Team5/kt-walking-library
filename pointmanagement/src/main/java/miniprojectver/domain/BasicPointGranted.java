@@ -15,9 +15,11 @@ public class BasicPointGranted extends AbstractEvent {
     private String userId;
     private Integer amount;
 
-    public BasicPointGranted(Point aggregate) {
-        super(aggregate);
-    }
+    public BasicPointGranted(Point aggregate, Integer amount) {
+    super(aggregate);
+    this.userId = aggregate.getUserId();
+    this.amount = amount;
+}
 
     public BasicPointGranted() {
         super();

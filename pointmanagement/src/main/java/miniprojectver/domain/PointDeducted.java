@@ -17,9 +17,15 @@ public class PointDeducted extends AbstractEvent {
     private Date purchasedAt;      // 🔹 추가: 구매 일시
     private String subscriptionId; // 구독권 구매시 식별자 (필요 시 사용)
 
-    public PointDeducted(Point aggregate) {
-        super(aggregate);
-    }
+    public PointDeducted(Point aggregate, int amount, String bookId, String authorId, Date date) {
+    super(aggregate);
+    this.userId = aggregate.getUserId();
+    this.amount = amount;
+    this.bookId = bookId;
+    this.authorId = authorId;
+    this.purchasedAt = date;
+}
+
 
     public PointDeducted() {
         super();
