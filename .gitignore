@@ -1,0 +1,19 @@
+# 의존성 폴더 (가장 중요!)
+node_modules/
+
+# 파이썬 가상환경
+venv/
+env/
+
+# 운영체제 및 IDE 설정 파일
+.DS_Store
+.vscode/
+.idea/
+
+# 빌드 결과물
+build/
+dist/
+
+# 로그 및 환경변수 파일
+*.log
+.env

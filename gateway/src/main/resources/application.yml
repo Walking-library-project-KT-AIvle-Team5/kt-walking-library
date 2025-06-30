@@ -1,0 +1,108 @@
+server:
+  port: 8088
+
+---
+
+spring:
+  profiles: default
+  cloud:
+    gateway:
+#<<< API Gateway / Routes
+      routes:
+        - id: auth
+          uri: http://localhost:8082
+          predicates:
+            - Path=/memberManagements/**, 
+        - id: dashboard
+          uri: http://localhost:8083
+          predicates:
+            - Path=, /pointViews/**, /fetchSubscriberLists/**, /authorStatistics/**
+        - id: bookmanagement
+          uri: http://localhost:8084
+          predicates:
+            - Path=/books/**, /manuscripts/**, 
+        - id: pointmanagement
+          uri: http://localhost:8085
+          predicates:
+            - Path=/points/**, 
+        - id: subscribermanagement
+          uri: http://localhost:8086
+          predicates:
+            - Path=/subscribeManagements/**, /readingManagements/**, /pointRequestManagements/**, /bookPurchaseManagements/**, 
+        - id: libraryplatform
+          uri: http://localhost:8087
+          predicates:
+            - Path=/bookPublications/**, /platformManagements/**, 
+        - id: authormanagement
+          uri: http://localhost:8088
+          predicates:
+            - Path=/authorRegistrations/**, 
+        - id: frontend
+          uri: http://localhost:8080
+          predicates:
+            - Path=/**
+#>>> API Gateway / Routes
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+
+---
+
+spring:
+  profiles: docker
+  cloud:
+    gateway:
+      routes:
+        - id: auth
+          uri: http://auth:8080
+          predicates:
+            - Path=/memberManagements/**, 
+        - id: dashboard
+          uri: http://dashboard:8080
+          predicates:
+            - Path=, 
+        - id: bookmanagement
+          uri: http://bookmanagement:8080
+          predicates:
+            - Path=/books/**, /manuscripts/**, 
+        - id: pointmanagement
+          uri: http://pointmanagement:8080
+          predicates:
+            - Path=/points/**, 
+        - id: subscribermanagement
+          uri: http://subscribermanagement:8080
+          predicates:
+            - Path=/subscribeManagements/**, /readingManagements/**, /pointRequestManagements/**, /bookPurchaseManagements/**, 
+        - id: libraryplatform
+          uri: http://libraryplatform:8080
+          predicates:
+            - Path=/bookPublications/**, /platformManagements/**, 
+        - id: authormanagement
+          uri: http://authormanagement:8080
+          predicates:
+            - Path=/authorRegistrations/**, 
+        - id: frontend
+          uri: http://frontend:8080
+          predicates:
+            - Path=/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+server:
+  port: 8080
