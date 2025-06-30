@@ -1,6 +1,7 @@
 package miniprojectver.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import lombok.*;
 import miniprojectver.domain.*;
@@ -16,7 +17,8 @@ public class ReadingCompleted extends AbstractEvent {
     private String userId;
     private String bookId;
     private Integer finalPage; // 독서 완료 시의 최종 페이지
-    private Date completedAt;
+    private LocalDateTime completedAt;
+    
 
     public ReadingCompleted(ReadingManagement aggregate) {
         super();

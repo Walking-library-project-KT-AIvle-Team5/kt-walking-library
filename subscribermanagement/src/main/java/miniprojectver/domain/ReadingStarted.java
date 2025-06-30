@@ -1,6 +1,7 @@
 package miniprojectver.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import lombok.*;
 import miniprojectver.domain.*;
@@ -16,7 +17,8 @@ public class ReadingStarted extends AbstractEvent {
     private String userId;
     private String bookId;
     private Integer initialPage; // 독서 시작 페이지 (보통 1)
-    private Date startedAt;
+    private LocalDateTime startedAt;
+    
 
     public ReadingStarted(ReadingManagement aggregate) {
         super();

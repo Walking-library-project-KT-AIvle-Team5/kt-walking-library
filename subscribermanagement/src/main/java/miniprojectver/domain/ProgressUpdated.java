@@ -1,9 +1,10 @@
 package miniprojectver.domain;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+//import java.time.LocalDate;
 import java.util.*;
 import lombok.*;
-import miniprojectver.domain.*;
+//import miniprojectver.domain.*;
 import miniprojectver.infra.AbstractEvent;
 
 //<<< DDD / Domain Event
@@ -16,7 +17,7 @@ public class ProgressUpdated extends AbstractEvent {
     private String userId;
     private String bookId;
     private Integer currentPage; // 업데이트된 현재 페이지
-    private Date lastUpdatedAt;
+    private LocalDateTime lastUpdatedAt;
 
     public ProgressUpdated(ReadingManagement aggregate) {
         super();

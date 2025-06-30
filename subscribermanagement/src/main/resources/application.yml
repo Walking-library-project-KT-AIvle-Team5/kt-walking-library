@@ -11,6 +11,7 @@ spring:
   jpa:
     properties:
       hibernate:
+        ddl-auto: create
         show_sql: true
         format_sql: true
         implicit_naming_strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
@@ -40,10 +41,16 @@ spring:
 #>>> EDA / Topic Name
           contentType: application/json
 
+# logging:
+#   level:
+#     org.hibernate.type: trace
+#     org.springframework.cloud: debug
 logging:
   level:
-    org.hibernate.type: trace
-    org.springframework.cloud: debug
+    root: INFO
+    org.springframework: DEBUG
+    org.hibernate: TRACE # Hibernate의 SQL 바인딩 로그를 가장 자세히 확인
+    # miniprojectver: DEBUG # 당신의 애플리케이션 패키지 로그도 DEBUG로 설정
 
 
 server:
