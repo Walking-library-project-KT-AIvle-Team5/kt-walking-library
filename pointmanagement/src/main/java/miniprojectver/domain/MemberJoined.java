@@ -11,6 +11,7 @@ import miniprojectver.infra.AbstractEvent;
 public class MemberJoined extends AbstractEvent {
 
     private Long id;
+    private String userId;
     private Boolean isKtCustomer;
     private String loginId;
     private String password;

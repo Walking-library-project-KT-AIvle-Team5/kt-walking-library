@@ -14,5 +14,5 @@ public class SubscriptionRequested extends AbstractEvent {
     private String userId;
     private Date startedAt;
     private Date endsAt;
-    private Date timestamp;
+    private Long timestamp;
 }

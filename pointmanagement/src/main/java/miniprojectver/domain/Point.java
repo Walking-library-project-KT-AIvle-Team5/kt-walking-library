@@ -3,9 +3,9 @@ package miniprojectver.domain;
 import lombok.Data;
 import miniprojectver.PointmanagementApplication;
 import miniprojectver.command.*;
+import miniprojectver.domain.*;
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Optional;
 
 @Entity
 @Table(name = "Point_table")
@@ -26,9 +26,7 @@ public class Point {
         return PointmanagementApplication.applicationContext.getBean(PointRepository.class);
     }
 
-    /* ----------------------------------------------------------
-     * 1. 기본 포인트 + KT 보너스 지급 (회원가입 시)
-     * ---------------------------------------------------------- */
+    // ✅ 1. 기본 포인트 + KT 보너스 지급
     public static void grantBasicPoint(MemberJoined memberJoined) {
         Point point = repository()
             .findByUserId(memberJoined.getUserId())
@@ -42,11 +40,9 @@ public class Point {
             point.setIsktCustomer(memberJoined.getIsKtCustomer());
         }
 
-        // 기본 포인트 지급
         point.setCurrentPoint(point.getCurrentPoint() + 1_000);
         point.setTotalCharged(point.getTotalCharged() + 1_000);
 
-        // KT 고객이라면 보너스 지급
         if (Boolean.TRUE.equals(memberJoined.getIsKtCustomer())) {
             point.setCurrentPoint(point.getCurrentPoint() + 5_000);
             point.setTotalCharged(point.getTotalCharged() + 5_000);
@@ -63,9 +59,7 @@ public class Point {
         basicEvt.publishAfterCommit();
     }
 
-    /* ----------------------------------------------------------
-     * 2. 포인트 충전 (결제 성공 시)
-     * ---------------------------------------------------------- */
+    // ✅ 2. 포인트 충전
     public static void chargePoint(ChargePointCommand cmd) {
         if (cmd.getAmount() == null || cmd.getAmount() <= 0) {
             PointChargeFailed failed = new PointChargeFailed();
@@ -96,9 +90,7 @@ public class Point {
         evt.publishAfterCommit();
     }
 
-    /* ----------------------------------------------------------
-     * 3. 포인트 사용 (책 구매 / 구독권 결제 등)
-     * ---------------------------------------------------------- */
+    // ✅ 3. 포인트 사용
     public static void usePoint(UsePointCommand cmd) {
         Point point = repository().findByUserId(cmd.getUserId()).orElse(null);
 
@@ -128,8 +120,33 @@ public class Point {
         PointDeducted deducted = new PointDeducted(point);
         deducted.setAmount(cmd.getAmount());
         deducted.setBookId(cmd.getBookId());
-        deducted.setAuthorId(cmd.getAuthorId());     // ✅ authorId 설정
-        deducted.setPurchasedAt(new Date());         // ✅ 구매 시각 설정
+        deducted.setAuthorId(cmd.getAuthorId());
+        deducted.setPurchasedAt(new Date());
         deducted.publishAfterCommit();
+    }
+
+    // ✅ 4. 구독 시 포인트 차감 시도 - 두 경우에 대응
+    public static void tryPointDeduction(SubscriptionRequested event) {
+        System.out.println("🔁 [구독 요청에 대한 포인트 차감 시도] " + event);
+        // 실제 차감 로직을 넣거나, UsePointCommand 로 바꿔서 발행 가능
+    }
+
+    public static void tryPointDeduction(SubscriptionStatusChecked event) {
+        System.out.println("🔁 [구독 상태 확인에 따른 포인트 차감 시도] " + event);
+        // 마찬가지로 실제 차감 UsePointCommand 발행 로직 구현 가능
+    }
+
+    // ✅ 5. 추가 보너스 포인트 지급 커맨드 대응
+    public static void grantBonusPoint(GrantBonusPointCommand cmd) {
+        Point point = repository().findByUserId(cmd.getUserId()).orElse(null);
+        if (point == null) return;
+
+        point.setCurrentPoint(point.getCurrentPoint() + cmd.getAmount());
+        point.setTotalCharged(point.getTotalCharged() + cmd.getAmount());
+        repository().save(point);
+
+        BonusPointGranted evt = new BonusPointGranted(point);
+        evt.setAmount(cmd.getAmount());
+        evt.publishAfterCommit();
     }
 }
