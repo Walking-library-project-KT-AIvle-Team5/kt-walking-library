@@ -7,10 +7,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.*;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
 import lombok.Data;
 import miniprojectver.LibraryplatformApplication;
 import miniprojectver.domain.PaymentRecommendationMessageSent;
 import miniprojectver.domain.SubscriptionStatusChecked;
+
+
+import miniprojectver.domain.PointUseFailed;
 
 @Entity
 @Table(name = "PlatformManagement_table")
@@ -26,6 +33,13 @@ public class PlatformManagement {
 
     private String recommendationMessage;
 
+    @Data
+    public class FetchSubscriberList {
+    private String userId;
+    private String status; // "ACTIVE" 등
+}
+
+
     public static PlatformManagementRepository repository() {
         PlatformManagementRepository platformManagementRepository = LibraryplatformApplication.applicationContext.getBean(
             PlatformManagementRepository.class
@@ -34,32 +48,55 @@ public class PlatformManagement {
     }
 
     //<<< Clean Arch / Port Method
-    public static void checkSubscription(
-        BookPurchaseRequested bookPurchaseRequested
-    ) {
-        String userId = bookPurchaseRequested.getUserId();
+public static void checkSubscription(BookPurchaseRequested bookPurchaseRequested) {
+    String userId = bookPurchaseRequested.getUserId();
 
-        // FetchSubscriberListRepository 가져오기
-        FetchSubscriberListRepository subscriberRepo =
-            LibraryplatformApplication.applicationContext.getBean(FetchSubscriberListRepository.class);
+    // RestTemplate 사용
+    RestTemplate restTemplate = LibraryplatformApplication.applicationContext.getBean(RestTemplate.class);
 
-        // 해당 userId의 ACTIVE 구독 여부 확인
-        List<FetchSubscriberList> activeSubs = subscriberRepo.findByUserIdAndStatus(userId, "ACTIVE");
-        boolean isSubscribed = (activeSubs != null && !activeSubs.isEmpty());
+    // subscriberService.url 은 application.yml에 정의되어 있어야 함
+    String url = "http://localhost:8081/subscribers?userId=" + userId;
 
-        // SubscriptionStatusChecked 이벤트 발행
-        SubscriptionStatusChecked event = new SubscriptionStatusChecked();
-        event.setUserId(userId);
-        event.setIsSubscribed(isSubscribed);
-        event.publishAfterCommit();
+    boolean isSubscribed = false;
 
+    try {
+        // 예시: 응답이 boolean 또는 Subscriber 객체 배열이라고 가정
+        ResponseEntity<FetchSubscriberList[]> response =
+            restTemplate.getForEntity(url, FetchSubscriberList[].class);
 
+        FetchSubscriberList[] subscribers = response.getBody();
+
+        if (subscribers != null && subscribers.length > 0) {
+            for (FetchSubscriberList sub : subscribers) {
+                if ("ACTIVE".equalsIgnoreCase(sub.getStatus())) {
+                    isSubscribed = true;
+                    break;
+                }
+            }
+        }
+    } catch (Exception e) {
+        System.out.println("구독자 정보 조회 실패: " + e.getMessage());
     }
+
+    // 이벤트 발행
+    SubscriptionStatusChecked event = new SubscriptionStatusChecked();
+    event.setUserId(userId);
+    event.setIsSubscribed(isSubscribed);
+    event.publishAfterCommit();
+}
+
     
     //>>> Clean Arch / Port Method
     public static void sendPaymentRecommendation(PointUseFailed pointUseFailed) {
 
     String userId = pointUseFailed.getUserId();
+    Boolean  isKtCustomer = pointUseFailed.getIsktCustomer(); 
+
+    // KT 고객이 아닌 경우에만 추천 메시지 전송
+    if (Boolean.TRUE.equals(isKtCustomer)) {
+        // 조건 불충족: 아무 작업 안 함
+        return;
+    }
 
     PlatformManagement platformManagement = new PlatformManagement();
     platformManagement.setSubscribedUserIds(userId);
@@ -69,7 +106,8 @@ public class PlatformManagement {
 
     PaymentRecommendationMessageSent event = new PaymentRecommendationMessageSent(platformManagement);
     event.publishAfterCommit();
-    }
+}
+
 
     //>>> Clean Arch / Port Method
 

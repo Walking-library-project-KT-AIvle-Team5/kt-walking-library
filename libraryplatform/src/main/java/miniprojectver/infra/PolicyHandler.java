@@ -12,6 +12,8 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 //<<< Clean Arch / Inbound Adaptor
 @Service
 @Transactional
@@ -80,3 +82,4 @@ public class PolicyHandler {
 
 }
 //>>> Clean Arch / Inbound Adaptor
+
