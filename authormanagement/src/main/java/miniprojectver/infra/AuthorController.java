@@ -62,16 +62,22 @@ public class AuthorController {
 
     // 등록 거절 (PUT /authors/{id}/deny)
     @PutMapping("/{id}/deny")
-    public ResponseEntity<Author> denyAuthor(@PathVariable("id") Long id, @RequestParam String reason) {
+    public ResponseEntity<Author> denyAuthor(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body, 
+            @RequestHeader("X-Admin-Id") Long adminId
+    ) {
+        String reason = body.get("denialReason");
         Optional<Author> opt = authorRepository.findById(id);
-        if(!opt.isPresent()) return ResponseEntity.notFound().build();
+        if (!opt.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
 
         Author author = opt.get();
         author.setCheckedDate(new Date());
         author.setAuthorRole("DENIED");
         author.setDenialReason(reason);
         authorRepository.save(author);
-        // @PreUpdate에서 이벤트가 발행됨
         return ResponseEntity.ok(author);
     }
 
