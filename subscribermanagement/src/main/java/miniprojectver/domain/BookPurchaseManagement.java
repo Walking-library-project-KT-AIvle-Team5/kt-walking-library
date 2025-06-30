@@ -1,9 +1,11 @@
 package miniprojectver.domain;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
+// import java.util.Date;
 import javax.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -16,6 +18,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "book_purchase_management")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = "purchaseRequestId", callSuper = false)
 //<<< DDD / Aggregate Root
@@ -31,10 +34,14 @@ public class BookPurchaseManagement {
     private BigDecimal point;
 
     @Enumerated(EnumType.STRING) // <- 이 어노테이션 추가
+    @Column(name = "purchase_status")
     private BookPurchaseStatus status; // <- 타입 변경: String -> BookPurchaseStatus
 
-    private Date requestedAt;
-    private Date processedAt;
+    @Column(name = "started_at", columnDefinition = "TIMESTAMP")
+    private LocalDateTime startedAt;
+    
+    @Column(name = "processed_at", columnDefinition = "TIMESTAMP")
+    private LocalDateTime processedAt;
 
     // --- [1] 비즈니스 행위: 도서 구매 요청 (Command) - 팩토리 메서드 ---
     public static BookPurchaseManagement requestBookPurchase(
@@ -60,7 +67,10 @@ public class BookPurchaseManagement {
         newPurchase.price = price;
         newPurchase.point = point;
         newPurchase.status = BookPurchaseStatus.PENDING; // <- Enum 값으로 변경
-        newPurchase.requestedAt = new Date();
+        newPurchase.startedAt = LocalDateTime.now();
+
+        // [1-3] 도서 구매 요청 이벤트 발행 <--- 이 부분 추가!
+        new BookPurchaseRequested(newPurchase).publishAfterCommit();
 
         return newPurchase;
     }
@@ -75,7 +85,7 @@ public class BookPurchaseManagement {
 
         // [2-2] 상태 변경
         this.status = BookPurchaseStatus.COMPLETED; // <- Enum 값으로 변경
-        this.processedAt = new Date();
+        this.processedAt = LocalDateTime.now();
 
         // [2-3] 도메인 이벤트 발행 (변경 없음)
         new BookPurchaseCompleted(this).publishAfterCommit();
@@ -90,7 +100,7 @@ public class BookPurchaseManagement {
 
         // [3-2] 상태 변경
         this.status = BookPurchaseStatus.FAILED; // <- Enum 값으로 변경
-        this.processedAt = new Date();
+        this.processedAt = LocalDateTime.now();
 
         // [3-3] 도메인 이벤트 발행 (변경 없음)
         new BookPurchaseFailed(this).publishAfterCommit();
@@ -100,8 +110,6 @@ public class BookPurchaseManagement {
     @PostPersist
     public void onPostPersist() {
         System.out.println("BookPurchaseManagement: Running @PostPersist for ID: " + this.purchaseRequestId);
-        BookPurchaseRequested bookPurchaseRequested = new BookPurchaseRequested(this);
-        bookPurchaseRequested.publishAfterCommit();
     }
 }
 //>>> DDD / Aggregate Root

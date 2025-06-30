@@ -48,7 +48,7 @@ spring:
 logging:
   level:
     root: INFO
-    org.springframework: DEBUG
+    # org.springframework: DEBUG
     org.hibernate: TRACE # Hibernate의 SQL 바인딩 로그를 가장 자세히 확인
     # miniprojectver: DEBUG # 당신의 애플리케이션 패키지 로그도 DEBUG로 설정
 

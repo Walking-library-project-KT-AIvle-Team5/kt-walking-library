@@ -1,6 +1,7 @@
 package miniprojectver.domain;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,7 @@ public class BookPurchaseCompleted extends AbstractEvent {
     private String bookId;
     private BigDecimal price;
     private BigDecimal point;
-    private Date completedAt; // 구매 완료 시각
+    private LocalDateTime completedAt; // 구매 완료 시각
 
     // String에서 BookPurchaseStatus Enum 타입으로 변경
     private BookPurchaseStatus status;
