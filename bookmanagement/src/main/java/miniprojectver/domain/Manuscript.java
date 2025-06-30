@@ -1,110 +1,83 @@
 package miniprojectver.domain;
 
-import miniprojectver.domain.ManuscriptPublicationRequested;
-import miniprojectver.domain.ManuscriptWritten;
-import miniprojectver.domain.ManuscriptEdited;
-import miniprojectver.domain.ManuscriptDeleted;
-import miniprojectver.domain.AiCoverImageRequested;
-import miniprojectver.domain.EbookAnalysisRequested;
-import miniprojectver.BookmanagementApplication;
-import javax.persistence.*;
-import java.util.List;
 import lombok.Data;
-import java.util.Date;
-import java.time.LocalDate;
-import java.util.Map;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Collections;
-
+import javax.persistence.*;
+import miniprojectver.BookmanagementApplication;
 
 @Entity
-@Table(name="Manuscript_table")
+@Table(name = "Manuscript_table")
 @Data
-
-//<<< DDD / Aggregate Root
-public class Manuscript  {
+public class Manuscript {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    
-    
-    
-private Long manuscriptId;    
-    
-    
-private String title;    
-    
-    
-private Long authorId;    
-    
-    
-private String content;    
-    
-    
-private ManuscriptStatus status;
-    
-    
-private Boolean imageRequested;    
-    
-    
-private Boolean aiSummaryRequested;    
-    
-    
-private String category;    
-    
-    
-private String imagePath;    
-    
-    
-private String summary;    
-    
-    
-private Integer price;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long manuscriptId;
 
-    @PostPersist
-    public void onPostPersist(){
+    private String title;
+    private Long authorId;
+    private String content;
+    private ManuscriptStatus status;
+    private Boolean imageRequested;
+    private Boolean aiSummaryRequested;
+    private String category;
+    private String imagePath;
+    private String summary;
+    private Integer price;
 
+    // 출간 요청 Command Handler
+    public void requestPublication() {
+        // 상태 변경
+        this.status = ManuscriptStatus.PUBLICATION_REQUESTED;
 
-        ManuscriptPublicationRequested manuscriptPublicationRequested = new ManuscriptPublicationRequested(this);
-        manuscriptPublicationRequested.publishAfterCommit();
-
-
-
-        ManuscriptWritten manuscriptWritten = new ManuscriptWritten(this);
-        manuscriptWritten.publishAfterCommit();
-
-
-
-        ManuscriptEdited manuscriptEdited = new ManuscriptEdited(this);
-        manuscriptEdited.publishAfterCommit();
-
-
-
-        ManuscriptDeleted manuscriptDeleted = new ManuscriptDeleted(this);
-        manuscriptDeleted.publishAfterCommit();
-
-
-
-        AiCoverImageRequested aiCoverImageRequested = new AiCoverImageRequested(this);
-        aiCoverImageRequested.publishAfterCommit();
-
-
-
-        EbookAnalysisRequested ebookAnalysisRequested = new EbookAnalysisRequested(this);
-        ebookAnalysisRequested.publishAfterCommit();
-
-    
+        // 이벤트 발행
+        ManuscriptPublicationRequested event = new ManuscriptPublicationRequested(this);
+        event.publishAfterCommit();
     }
 
-    public static ManuscriptRepository repository(){
-        ManuscriptRepository manuscriptRepository = BookmanagementApplication.applicationContext.getBean(ManuscriptRepository.class);
-        return manuscriptRepository;
+    // 원고 작성 Command Handler
+    public void write(String content) {
+        this.content = content;
+        this.status = ManuscriptStatus.WRITTEN;
+
+        ManuscriptWritten event = new ManuscriptWritten(this);
+        event.publishAfterCommit();
     }
 
+    // 원고 수정 Command Handler
+    public void edit(String newContent) {
+        this.content = newContent;
+        this.status = ManuscriptStatus.EDITED;
 
+        ManuscriptEdited event = new ManuscriptEdited(this);
+        event.publishAfterCommit();
+    }
 
+    // 원고 삭제 Command Handler
+    public void deleteManuscript() {
+        this.status = ManuscriptStatus.DELETED;
 
+        ManuscriptDeleted event = new ManuscriptDeleted(this);
+        event.publishAfterCommit();
+    }
 
+    // AI 표지 생성 요청
+    public void requestAiCoverImage() {
+        this.imageRequested = true;
 
+        AiCoverImageRequested event = new AiCoverImageRequested(this);
+        event.publishAfterCommit();
+    }
+
+    // 전자책 분석 요청
+    public void requestEbookAnalysis() {
+        this.aiSummaryRequested = true;
+
+        EbookAnalysisRequested event = new EbookAnalysisRequested(this);
+        event.publishAfterCommit();
+    }
+
+    // Repository 접근 메서드
+    public static ManuscriptRepository repository() {
+        return BookmanagementApplication.applicationContext.getBean(ManuscriptRepository.class);
+    }
 }
-//>>> DDD / Aggregate Root

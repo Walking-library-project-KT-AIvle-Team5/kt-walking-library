@@ -1,13 +1,9 @@
 package miniprojectver.domain;
 
-import miniprojectver.domain.*;
 import miniprojectver.infra.AbstractEvent;
-import java.util.*;
-import lombok.*;
-import java.time.LocalDate;
+import lombok.Data;
+import lombok.ToString;
 
-
-//<<< DDD / Domain Event
 @Data
 @ToString
 public class ManuscriptPublicationRequested extends AbstractEvent {
@@ -24,9 +20,18 @@ public class ManuscriptPublicationRequested extends AbstractEvent {
 
     public ManuscriptPublicationRequested(Manuscript aggregate){
         super(aggregate);
+        this.manuscriptId = aggregate.getManuscriptId();
+        this.title = aggregate.getTitle();
+        this.authorId = aggregate.getAuthorId();
+        this.content = aggregate.getContent();
+        this.status = aggregate.getStatus();
+        this.category = aggregate.getCategory();
+        this.imagePath = aggregate.getImagePath();
+        this.summary = aggregate.getSummary();
+        this.price = aggregate.getPrice();
     }
+
     public ManuscriptPublicationRequested(){
         super();
     }
 }
-//>>> DDD / Domain Event

@@ -1,7 +1,8 @@
 version: '2'
+
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.2.1
+    image: confluentinc/cp-zookeeper:7.5.0
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -9,7 +10,7 @@ services:
       - 2181:2181
 
   kafka:
-    image: confluentinc/cp-kafka:7.2.1
+    image: confluentinc/cp-kafka:7.5.0
     container_name: my-kafka
     depends_on:
       - zookeeper
@@ -19,15 +20,24 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://my-kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    command: >
+      bash -c "/etc/confluent/docker/run"
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/29092"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   auth:
-    depends_on: 
-      - kafka
     image: adoptopenjdk/maven-openjdk11:latest
+    depends_on:
+      kafka:
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     command: mvn spring-boot:run
@@ -39,9 +49,10 @@ services:
       - ./maven-repo:/root/.m2
 
   dashboard:
-    depends_on: 
-      - kafka
     image: adoptopenjdk/maven-openjdk11:latest
+    depends_on:
+      kafka:
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     command: mvn spring-boot:run
@@ -53,12 +64,14 @@ services:
       - ./maven-repo:/root/.m2
 
   bookmanagement:
-    depends_on: 
-      - kafka
     image: adoptopenjdk/maven-openjdk11:latest
+    depends_on:
+      kafka:
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     command: mvn spring-boot:run
+    # command: [ "tail", "-f", "/dev/null" ]
     ports:
       - 8084:8084
     working_dir: /usr/src
@@ -67,9 +80,10 @@ services:
       - ./maven-repo:/root/.m2
 
   pointmanagement:
-    depends_on: 
-      - kafka
     image: adoptopenjdk/maven-openjdk11:latest
+    depends_on:
+      kafka:
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     command: mvn spring-boot:run
@@ -81,9 +95,10 @@ services:
       - ./maven-repo:/root/.m2
 
   subscribermanagement:
-    depends_on: 
-      - kafka
     image: adoptopenjdk/maven-openjdk11:latest
+    depends_on:
+      kafka:
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     command: mvn spring-boot:run
@@ -95,9 +110,10 @@ services:
       - ./maven-repo:/root/.m2
 
   libraryplatform:
-    depends_on: 
-      - kafka
     image: adoptopenjdk/maven-openjdk11:latest
+    depends_on:
+      kafka:
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     command: mvn spring-boot:run
@@ -109,9 +125,10 @@ services:
       - ./maven-repo:/root/.m2
 
   authormanagement:
-    depends_on: 
-      - kafka
     image: adoptopenjdk/maven-openjdk11:latest
+    depends_on:
+      kafka:
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     command: mvn spring-boot:run

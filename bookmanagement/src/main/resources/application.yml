@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: bookmanagement
+    name: pointmanagement
 ---
 
 spring:
@@ -29,7 +29,7 @@ spring:
                   serde: org.apache.kafka.common.serialization.Serdes$StringSerde
       bindings:
         event-in:
-          group: bookmanagement
+          group: pointmanagement
 #<<< EDA / Topic Name
           destination: miniprojectver
 #>>> EDA / Topic Name
@@ -47,7 +47,7 @@ logging:
 
 
 server:
-  port: 8084
+  port: 8085
 
 ---
 
@@ -74,11 +74,10 @@ spring:
                   serde: org.apache.kafka.common.serialization.Serdes$StringSerde
       bindings:
         event-in:
-          group: bookmanagement
+          group: pointmanagement
           destination: miniprojectver
           contentType: application/json
         event-out:
           destination: miniprojectver
           contentType: application/json
-
 
