@@ -13,12 +13,12 @@ import lombok.Data;
 public class FetchSubscriberList {
 
     @Id
-    //@GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
     private Long subscriptionId;
     private String userId;
-    private Date startedAt;
+    private Date startedAt; 
     private Date endAt;
     private String status;
 }

@@ -1,6 +1,7 @@
 package miniprojectver.infra;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import miniprojectver.config.kafka.KafkaProcessor;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class FetchSubscriberListViewHandler {
 
-    //<<< DDD / CQRS
     @Autowired
     private FetchSubscriberListRepository fetchSubscriberListRepository;
 
@@ -24,23 +24,35 @@ public class FetchSubscriberListViewHandler {
         try {
             if (!subscriptionRequested.validate()) return;
 
-            // view 객체 생성
+            // ✅ consume 로그 추가
+            System.out.println("=== SubscriptionRequested event consumed ===");
+            System.out.println(subscriptionRequested.toJson());
+
             FetchSubscriberList fetchSubscriberList = new FetchSubscriberList();
-            // view 객체에 이벤트의 Value 를 set 함
+
             fetchSubscriberList.setSubscriptionId(
                 subscriptionRequested.getSubscriptionId()
             );
             fetchSubscriberList.setUserId(subscriptionRequested.getUserId());
+
+            // ✅ Long → Date 변환
             fetchSubscriberList.setStartedAt(
-                subscriptionRequested.getStartedAt()
+                subscriptionRequested.getStartedAt() != null
+                    ? new Date(subscriptionRequested.getStartedAt())
+                    : null
             );
-            fetchSubscriberList.setEndAt(subscriptionRequested.getEndsAt());
-            // view 레파지 토리에 save
+            fetchSubscriberList.setEndAt(
+                subscriptionRequested.getEndsAt() != null
+                    ? new Date(subscriptionRequested.getEndsAt())
+                    : null
+            );
+
             fetchSubscriberListRepository.save(fetchSubscriberList);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     @StreamListener(KafkaProcessor.INPUT)
     public void whenSubscriptionCancelled_then_UPDATE_1(
@@ -48,20 +60,19 @@ public class FetchSubscriberListViewHandler {
     ) {
         try {
             if (!subscriptionCancelled.validate()) return;
-            // view 객체 조회
 
             List<FetchSubscriberList> fetchSubscriberListList = fetchSubscriberListRepository.findBySubscriptionId(
                 subscriptionCancelled.getSubscriptionId()
             );
             for (FetchSubscriberList fetchSubscriberList : fetchSubscriberListList) {
-                // view 객체에 이벤트의 eventDirectValue 를 set 함
+                // ✅ Long → Date 변환
                 fetchSubscriberList.setEndAt(
-                    subscriptionCancelled.getCancelledAt()
+                    subscriptionCancelled.getCancelledAt() != null
+                        ? new Date(subscriptionCancelled.getCancelledAt())
+                        : null
                 );
-                fetchSubscriberList.setStatus(
-                    subscriptionCancelled.getStatus()
-                );
-                // view 레파지 토리에 save
+                fetchSubscriberList.setStatus(subscriptionCancelled.getStatus());
+
                 fetchSubscriberListRepository.save(fetchSubscriberList);
             }
         } catch (Exception e) {
@@ -75,11 +86,9 @@ public class FetchSubscriberListViewHandler {
     ) {
         try {
             if (!subscriptionCancelled.validate()) return;
-            // view 객체 조회
-
+            // (현재 내용 없음)
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    //>>> DDD / CQRS
 }

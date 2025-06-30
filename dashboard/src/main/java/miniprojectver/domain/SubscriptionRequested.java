@@ -10,7 +10,7 @@ public class SubscriptionRequested extends AbstractEvent {
 
     private Long subscriptionId;
     private String userId;
-    private Date startedAt;
-    private Date endsAt;
-    private Date timestamp;
+    private Long startedAt;
+    private Long endsAt;
+    private Long timestamp;
 }
