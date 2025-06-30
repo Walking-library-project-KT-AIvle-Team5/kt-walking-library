@@ -1,18 +1,14 @@
 package miniprojectver.infra;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.naming.NameParser;
-import javax.naming.NameParser;
 import javax.transaction.Transactional;
 import miniprojectver.config.kafka.KafkaProcessor;
 import miniprojectver.domain.*;
+import miniprojectver.command.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
-//<<< Clean Arch / Inbound Adaptor
 @Service
 @Transactional
 public class PolicyHandler {
@@ -23,56 +19,43 @@ public class PolicyHandler {
     @StreamListener(KafkaProcessor.INPUT)
     public void whatever(@Payload String eventString) {}
 
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='SubscriptionStatusChecked'"
-    )
-    public void wheneverSubscriptionStatusChecked_TryPointDeduction(
-        @Payload SubscriptionStatusChecked subscriptionStatusChecked
-    ) {
-        SubscriptionStatusChecked event = subscriptionStatusChecked;
-        System.out.println(
-            "\n\n##### listener TryPointDeduction : " +
-            subscriptionStatusChecked +
-            "\n\n"
-        );
+    // 1. 회원 가입 시 기본/보너스 포인트 지급
+    @StreamListener(value = KafkaProcessor.INPUT, condition = "headers['type']=='MemberJoined'")
+    public void wheneverMemberJoined_GrantBasicPoint(@Payload MemberJoined memberJoined) {
+        if (memberJoined == null || memberJoined.getUserId() == null) return;
+        System.out.println("✅ listener GrantBasicPoint : " + memberJoined);
+        Point.grantBasicPoint(memberJoined);
+    }
 
-        // Sample Logic //
+    // 2. 구독 상태 확인 → 포인트 차감 시도
+    @StreamListener(value = KafkaProcessor.INPUT, condition = "headers['type']=='SubscriptionStatusChecked'")
+    public void wheneverSubscriptionStatusChecked_TryPointDeduction(@Payload SubscriptionStatusChecked event) {
+        if (event == null || event.getUserId() == null) return;
+        System.out.println("✅ listener TryPointDeduction (StatusChecked) : " + event);
         Point.tryPointDeduction(event);
     }
 
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='SubscriptionRequested'"
-    )
-    public void wheneverSubscriptionRequested_TryPointDeduction(
-        @Payload SubscriptionRequested subscriptionRequested
-    ) {
-        SubscriptionRequested event = subscriptionRequested;
-        System.out.println(
-            "\n\n##### listener TryPointDeduction : " +
-            subscriptionRequested +
-            "\n\n"
-        );
-
-        // Sample Logic //
+    // 3. 구독 요청 → 포인트 차감 시도
+    @StreamListener(value = KafkaProcessor.INPUT, condition = "headers['type']=='SubscriptionRequested'")
+    public void wheneverSubscriptionRequested_TryPointDeduction(@Payload SubscriptionRequested event) {
+        if (event == null || event.getUserId() == null) return;
+        System.out.println("✅ listener TryPointDeduction (Requested) : " + event);
         Point.tryPointDeduction(event);
     }
 
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='MemberJoined'"
-    )
-    public void wheneverMemberJoined_GrantBasicPoint(
-        @Payload MemberJoined memberJoined
-    ) {
-        MemberJoined event = memberJoined;
-        System.out.println(
-            "\n\n##### listener GrantBasicPoint : " + memberJoined + "\n\n"
-        );
+    // 4. 포인트 충전 커맨드 수신
+    @StreamListener(value = KafkaProcessor.INPUT, condition = "headers['type']=='ChargePointCommand'")
+    public void wheneverChargePointCommand_ChargePoint(@Payload ChargePointCommand command) {
+        if (command == null || command.getUserId() == null) return;
+        System.out.println("✅ listener ChargePoint : " + command);
+        Point.chargePoint(command);
+    }
 
-        // Sample Logic //
-        Point.grantBasicPoint(event);
+    // 5. 포인트 사용 커맨드 수신
+    @StreamListener(value = KafkaProcessor.INPUT, condition = "headers['type']=='UsePointCommand'")
+    public void wheneverUsePointCommand_UsePoint(@Payload UsePointCommand command) {
+        if (command == null || command.getUserId() == null) return;
+        System.out.println("✅ listener UsePoint : " + command);
+        Point.usePoint(command);
     }
 }
-//>>> Clean Arch / Inbound Adaptor
