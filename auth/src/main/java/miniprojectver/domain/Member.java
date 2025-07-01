@@ -3,7 +3,7 @@ package miniprojectver.domain;
 import javax.persistence.*;
 import org.springframework.beans.BeanUtils;
 
-// @Data 어노테이션을 제거합니다.
+// @Data 어노테이션을 제거
 @Entity
 @Table(name="Member_table")
 public class Member {
