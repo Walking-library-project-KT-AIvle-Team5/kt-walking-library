@@ -1,15 +1,13 @@
 package miniprojectver.domain;
-
-import java.time.LocalDate;
-import java.util.*;
 import lombok.Data;
-import miniprojectver.infra.AbstractEvent;
+
+import java.util.Date;
 
 @Data
-public class PointDeducted extends AbstractEvent {
-
+public class PointDeducted {
     private String userId;
-    private Integer amountPoint;
     private String bookId;
-    private String subscriptionId;
+    private String authorId;
+    private Integer amount;
+    private Date purchasedAt;
 }

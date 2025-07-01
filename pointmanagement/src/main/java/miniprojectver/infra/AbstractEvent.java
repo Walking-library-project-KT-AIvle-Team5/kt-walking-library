@@ -50,15 +50,27 @@ public class AbstractEvent {
     }
 
     public void publishAfterCommit() {
-        TransactionSynchronizationManager.registerSynchronization(
-            new TransactionSynchronizationAdapter() {
-                @Override
-                public void afterCompletion(int status) {
-                    AbstractEvent.this.publish();
+    TransactionSynchronizationManager.registerSynchronization(
+        new TransactionSynchronizationAdapter() {
+            @Override
+            public void afterCompletion(int status) {
+                try {
+                    KafkaProcessor processor =
+                        PointmanagementApplication.applicationContext.getBean(KafkaProcessor.class);
+
+                    processor.outboundTopic().send(
+                        MessageBuilder.withPayload(AbstractEvent.this).build()
+                    );
+
+                } catch (Exception e) {
+                    // ❗ 에러 로그 보기
+                    System.out.println("⚠️ Kafka publish 실패: " + e.getMessage());
+                    e.printStackTrace();
                 }
             }
-        );
-    }
+        });
+}
+
 
     public String getEventType() {
         return eventType;

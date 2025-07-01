@@ -73,6 +73,7 @@ public class Point {
 
         point.addPoint(evt.getAmount());
         repository().save(point);
+        System.out.println("✅ 포인트 저장 완료: " + point);
 
         PointCharged chargedEvt = new PointCharged(point, evt.getAmount());
         chargedEvt.publishAfterCommit();
