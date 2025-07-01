@@ -11,13 +11,12 @@ import miniprojectver.infra.AbstractEvent;
 @ToString
 public class RegistrationApproved extends AbstractEvent {
 
-    private Long authorId;
-    private String authorName;
-    private String authorInfo;
-    private Boolean authorRole;
-    private Date craeteDate;
+    private Long  authorId;
+    private Long memberId;
+    private Date checkedDate;
+    private String authorRole;
 
-    public RegistrationApproved(AuthorRegistration aggregate) {
+    public RegistrationApproved(Author aggregate) {
         super(aggregate);
     }
 
