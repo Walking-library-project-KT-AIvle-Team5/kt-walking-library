@@ -1,10 +1,7 @@
 package miniprojectver.domain;
 
-import miniprojectver.domain.*;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-//<<< PoEAA / Repository
-@RepositoryRestResource(collectionResourceRel = "books", path = "books")
-public interface BookRepository
-    extends PagingAndSortingRepository<Book, Long> {}
+public interface BookRepository extends PagingAndSortingRepository<Book, Long> {
+    // 필요 시 커스텀 쿼리 메서드 추가
+}
