@@ -1,78 +1,44 @@
 package miniprojectver.infra;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.naming.NameParser;
-import javax.naming.NameParser;
-import javax.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import miniprojectver.config.kafka.KafkaProcessor;
-import miniprojectver.domain.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import miniprojectver.domain.Point;
+import miniprojectver.message.*;     // ↙︎ 수신 이벤트 DTO 모음
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-//<<< Clean Arch / Inbound Adaptor
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class PolicyHandler {
 
-    @Autowired
-    PointRepository pointRepository;
-
-    @StreamListener(KafkaProcessor.INPUT)
-    public void whatever(@Payload String eventString) {}
-
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='SubscriptionStatusChecked'"
-    )
-    public void wheneverSubscriptionStatusChecked_TryPointDeduction(
-        @Payload SubscriptionStatusChecked subscriptionStatusChecked
-    ) {
-        SubscriptionStatusChecked event = subscriptionStatusChecked;
-        System.out.println(
-            "\n\n##### listener TryPointDeduction : " +
-            subscriptionStatusChecked +
-            "\n\n"
-        );
-
-        // Sample Logic //
-        Point.tryPointDeduction(event);
+    /* 1. 회원 가입됨  */
+    @StreamListener(value = KafkaProcessor.INPUT,
+        condition = "headers['type']=='MemberJoined'")
+    public void onMemberJoined(@Payload MemberJoined evt) {
+        Point.grantPointOnMemberJoined(evt);
     }
 
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='SubscriptionRequested'"
-    )
-    public void wheneverSubscriptionRequested_TryPointDeduction(
-        @Payload SubscriptionRequested subscriptionRequested
-    ) {
-        SubscriptionRequested event = subscriptionRequested;
-        System.out.println(
-            "\n\n##### listener TryPointDeduction : " +
-            subscriptionRequested +
-            "\n\n"
-        );
-
-        // Sample Logic //
-        Point.tryPointDeduction(event);
+    /* 2. 포인트 구매(충전) 요청 */
+    @StreamListener(value = KafkaProcessor.INPUT,
+        condition = "headers['type']=='PointPurchaseRequested'")
+    public void onPointPurchase(@Payload PointPurchaseRequested evt) {
+        Point.chargePoint(evt);
     }
 
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='MemberJoined'"
-    )
-    public void wheneverMemberJoined_GrantBasicPoint(
-        @Payload MemberJoined memberJoined
-    ) {
-        MemberJoined event = memberJoined;
-        System.out.println(
-            "\n\n##### listener GrantBasicPoint : " + memberJoined + "\n\n"
-        );
+    /* 3-A. 구독 신청 */
+    @StreamListener(value = KafkaProcessor.INPUT,
+        condition = "headers['type']=='SubscriptionRequested'")
+    public void onSubscription(@Payload SubscriptionRequested evt) {
+        Point.deductForSubscription(evt);
+    }
 
-        // Sample Logic //
-        Point.grantBasicPoint(event);
+    /* 3-B. 도서 구매 요청 */
+    @StreamListener(value = KafkaProcessor.INPUT,
+        condition = "headers['type']=='BookPurchaseRequested'")
+    public void onBookPurchase(@Payload BookPurchaseRequested evt) {
+        Point.deductForBook(evt);
     }
 }
-//>>> Clean Arch / Inbound Adaptor

@@ -14,7 +14,7 @@ public class PointPurchaseRequested extends AbstractEvent {
 
     private Long pointRequestId;
     private String userId;
-    private Long requestedPointAmount;
+    // private Long requestedPointAmount;
     private String paymentMethodId;
     private BigDecimal actualPaymentAmount;
 

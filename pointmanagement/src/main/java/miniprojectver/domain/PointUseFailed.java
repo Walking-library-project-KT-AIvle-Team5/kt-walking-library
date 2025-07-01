@@ -8,6 +8,7 @@ import miniprojectver.infra.AbstractEvent;
 
 //<<< DDD / Domain Event
 @Data
+@EqualsAndHashCode(callSuper = false)
 @ToString
 public class PointUseFailed extends AbstractEvent {
 
@@ -16,9 +17,14 @@ public class PointUseFailed extends AbstractEvent {
     private Integer currentPoint;
     private Integer neededPoint;
 
-    public PointUseFailed(Point aggregate) {
-        super(aggregate);
-    }
+    public PointUseFailed(String userId, int neededPoint, int currentPoint, boolean isktCustomer) {
+    super();
+    this.userId = userId;
+    this.neededPoint = neededPoint;
+    this.currentPoint = currentPoint;
+    this.isktCustomer = isktCustomer;
+}
+
 
     public PointUseFailed() {
         super();
