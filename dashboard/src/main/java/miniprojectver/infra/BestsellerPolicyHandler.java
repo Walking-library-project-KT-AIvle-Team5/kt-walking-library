@@ -2,8 +2,8 @@ package miniprojectver.infra;
 
 import miniprojectver.config.kafka.KafkaProcessor;
 import miniprojectver.domain.*;
-import miniprojectver.event.BestSellerRegistered;
-import miniprojectver.event.PointDeducted;
+import miniprojectver.domain.BestSellerRegistered;
+import miniprojectver.domain.PointDeducted;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
