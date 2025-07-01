@@ -54,6 +54,7 @@ public class AbstractEvent {
             new TransactionSynchronizationAdapter() {
                 @Override
                 public void afterCompletion(int status) {
+                    System.out.println("✅ [Kafka 이벤트 발행] " + getEventType() + ": " + toJson());
                     AbstractEvent.this.publish();
                 }
             }
@@ -92,5 +93,6 @@ public class AbstractEvent {
 
         return json;
     }
+    
 }
 //>>> Clean Arch / Outbound Adaptor

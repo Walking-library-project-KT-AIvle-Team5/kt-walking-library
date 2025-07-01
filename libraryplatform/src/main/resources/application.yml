@@ -4,6 +4,7 @@ server:
 spring:
   application:
     name: libraryplatform
+
 ---
 
 spring:
@@ -30,21 +31,20 @@ spring:
       bindings:
         event-in:
           group: libraryplatform
-#<<< EDA / Topic Name
           destination: miniprojectver
-#>>> EDA / Topic Name
           contentType: application/json
         event-out:
-#<<< EDA / Topic Name
           destination: miniprojectver
-#>>> EDA / Topic Name
           contentType: application/json
+
+subscription:
+  api:
+    url: http://localhost:8081/subscribers
 
 logging:
   level:
     org.hibernate.type: trace
     org.springframework.cloud: debug
-
 
 server:
   port: 8087
@@ -81,4 +81,9 @@ spring:
           destination: miniprojectver
           contentType: application/json
 
+subscription:
+  api:
+    url: http://subscribermanagement:8080/subscribers
 
+server:
+  port: 8087

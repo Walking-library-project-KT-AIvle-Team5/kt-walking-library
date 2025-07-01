@@ -12,6 +12,8 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 //<<< Clean Arch / Inbound Adaptor
 @Service
 @Transactional
@@ -61,5 +63,23 @@ public class PolicyHandler {
         // Sample Logic //
         BookPublication.requestBookPublication(event);
     }
+
+    @StreamListener(
+        value = KafkaProcessor.INPUT,
+        condition = "headers['type']=='PointUseFailed'"
+    )
+    public void wheneverPointUseFailed_SendRecommendation(
+        @Payload PointUseFailed pointUseFailed
+    ) {
+        System.out.println(
+            "\n\n##### listener SendRecommendation : " +
+            pointUseFailed +
+            "\n\n"
+        );
+
+        PlatformManagement.sendPaymentRecommendation(pointUseFailed);
+    }
+
 }
 //>>> Clean Arch / Inbound Adaptor
+
