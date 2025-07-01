@@ -40,7 +40,7 @@ public class Book {
 
     private Boolean isBestseller;
 
-    private Status status;
+    private BookStatus status;
 
     public static BookRepository repository() {
         BookRepository bookRepository = BookmanagementApplication.applicationContext.getBean(
