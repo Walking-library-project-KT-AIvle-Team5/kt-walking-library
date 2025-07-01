@@ -13,9 +13,9 @@ public class RequestPointPurchaseCommand {
     @NotBlank(message = "User ID cannot be blank") // 비어 있거나 null이 아닌지 검사
     private String userId;
 
-    @NotNull(message = "Requested point amount cannot be null")
-    @Positive(message = "Requested point amount must be positive") // 0보다 큰지 검사
-    private Long requestedPointAmount;
+    // @NotNull(message = "Requested point amount cannot be null")
+    // @Positive(message = "Requested point amount must be positive") // 0보다 큰지 검사
+    // private Long requestedPointAmount;
 
     @NotBlank(message = "Payment method ID cannot be blank")
     private String paymentMethodId;

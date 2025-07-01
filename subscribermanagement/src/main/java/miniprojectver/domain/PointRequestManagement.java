@@ -27,7 +27,7 @@ public class PointRequestManagement {
 
     private String userId; // 사용자 ID
 
-    private Long requestedPointAmount; // 요청된 포인트 양
+    // private Long requestedPointAmount; // 요청된 포인트 양
 
     private String paymentMethodId; // 결제 수단 ID
 
@@ -46,7 +46,7 @@ public class PointRequestManagement {
     // --- [1] 비즈니스 행위를 나타내는 팩토리 메서드 (Command: "포인트 구매 요청") ---
     public static PointRequestManagement requestPointPurchase(
         String userId,
-        Long requestedPointAmount,
+        // Long requestedPointAmount,
         String paymentMethodId,
         BigDecimal actualPaymentAmount
     ) {
@@ -54,9 +54,9 @@ public class PointRequestManagement {
         if (userId == null || userId.isEmpty()) {
             throw new IllegalArgumentException("User ID cannot be null or empty.");
         }
-        if (requestedPointAmount == null || requestedPointAmount <= 0) {
-            throw new IllegalArgumentException("Requested point amount must be positive.");
-        }
+        // if (requestedPointAmount == null || requestedPointAmount <= 0) {
+        //     throw new IllegalArgumentException("Requested point amount must be positive.");
+        // }
         if (paymentMethodId == null || paymentMethodId.isEmpty()) {
             throw new IllegalArgumentException("Payment method ID cannot be null or empty.");
         }
@@ -67,7 +67,7 @@ public class PointRequestManagement {
         // [1-2] 애그리게이트 객체 생성 및 초기 상태 설정
         PointRequestManagement newRequest = new PointRequestManagement();
         newRequest.setUserId(userId);
-        newRequest.setRequestedPointAmount(requestedPointAmount);
+        // newRequest.setRequestedPointAmount(requestedPointAmount);
         newRequest.setPaymentMethodId(paymentMethodId);
         newRequest.setActualPaymentAmount(actualPaymentAmount);
         newRequest.setStatus(PointRequestStatus.PENDING); // <-- Enum 값으로 할당

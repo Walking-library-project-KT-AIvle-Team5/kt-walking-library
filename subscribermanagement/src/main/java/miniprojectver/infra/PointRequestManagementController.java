@@ -26,7 +26,7 @@ public class PointRequestManagementController {
             // DTO의 데이터를 사용하여 도메인 팩토리 메서드 호출
             PointRequestManagement newRequest = PointRequestManagement.requestPointPurchase(
                 requestPointPurchaseCommand.getUserId(),
-                requestPointPurchaseCommand.getRequestedPointAmount(),
+                // requestPointPurchaseCommand.getRequestedPointAmount(),
                 requestPointPurchaseCommand.getPaymentMethodId(),
                 requestPointPurchaseCommand.getActualPaymentAmount()
             );

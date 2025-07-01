@@ -22,7 +22,7 @@ public class PointRequestService {
     // --- [Command: "포인트 구매 요청" 처리 메서드] ---
     public PointRequestManagement requestPointPurchase(
         String userId,
-        Long requestedPointAmount,
+        // Long requestedPointAmount,
         String paymentMethodId,
         BigDecimal actualPaymentAmount
     ) {
@@ -45,7 +45,7 @@ public class PointRequestService {
         // [2] 애그리게이트 루트 생성 및 초기화
         PointRequestManagement newRequest = PointRequestManagement.requestPointPurchase(
             userId,
-            requestedPointAmount,
+            // requestedPointAmount,
             paymentMethodId,
             actualPaymentAmount
         );
