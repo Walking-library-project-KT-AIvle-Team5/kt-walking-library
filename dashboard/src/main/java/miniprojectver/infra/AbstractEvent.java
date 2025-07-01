@@ -71,3 +71,4 @@ public class AbstractEvent {
         return eventType != null && eventType.equals(payload.getClass().getSimpleName());
     }
 }
+
