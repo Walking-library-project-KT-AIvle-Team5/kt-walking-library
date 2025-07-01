@@ -9,5 +9,5 @@ public class PointDeducted {
     private String bookId;
     private String authorId;
     private Integer amount;
-    private Date purchasedAt;
+    private String purchasedAt;
 }
