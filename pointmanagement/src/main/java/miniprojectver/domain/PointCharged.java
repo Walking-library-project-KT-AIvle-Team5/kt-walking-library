@@ -8,7 +8,6 @@ import miniprojectver.infra.AbstractEvent;
 
 //<<< DDD / Domain Event
 @Data
-@EqualsAndHashCode(callSuper=false)
 @ToString
 public class PointCharged extends AbstractEvent {
 

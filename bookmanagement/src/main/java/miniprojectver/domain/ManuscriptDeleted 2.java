@@ -9,18 +9,16 @@ import miniprojectver.infra.AbstractEvent;
 //<<< DDD / Domain Event
 @Data
 @ToString
-public class PointUseFailed extends AbstractEvent {
+public class ManuscriptDeleted extends AbstractEvent {
 
-    private String userId;
-    private Boolean isktCustomer;
-    private Integer currentPoint;
-    private Integer neededPoint;
+    private Long manuscriptId;
+    private Long authorId;
 
-    public PointUseFailed(Point aggregate) {
+    public ManuscriptDeleted(Manuscript aggregate) {
         super(aggregate);
     }
 
-    public PointUseFailed() {
+    public ManuscriptDeleted() {
         super();
     }
 }
