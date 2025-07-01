@@ -21,7 +21,7 @@ public class BookRegistered extends AbstractEvent {
     private String contents;
     private Date createAt;
     private Boolean isBestseller;
-    private status status;
+    private BookStatus status;
     private Integer price;
 
     public BookRegistered(Book aggregate) {
