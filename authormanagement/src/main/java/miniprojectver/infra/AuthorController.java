@@ -45,6 +45,20 @@ public class AuthorController {
         return author.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
+    // 이름으로 정확 일치 검색 (GET /authors/search?name={name})
+    @GetMapping("/search")
+    public ResponseEntity<List<Author>> searchByName(@RequestParam("name") String name) {
+        List<Author> list = authorRepository.findByAuthorName(name);
+        return ResponseEntity.ok(list);
+    }
+
+    // 이름 부분 일치 검색 (GET /authors/search/contains?keyword={keyword})
+    @GetMapping("/search/contains")
+    public ResponseEntity<List<Author>> searchByNameContains(@RequestParam("keyword") String keyword) {
+        List<Author> list = authorRepository.findByAuthorNameContaining(keyword);
+        return ResponseEntity.ok(list);
+    }
+
     // 등록 승인 (PUT /authors/{id}/approve)
     @PutMapping("/{id}/approve")
     public ResponseEntity<Author> approveAuthor(@PathVariable("id") Long id) {
@@ -89,5 +103,6 @@ public class AuthorController {
         // @PreRemove에서 이벤트가 발행됨
         return ResponseEntity.ok().build();
     }
+    
 }
 //>>> Clean Arch / Inbound Adaptor
