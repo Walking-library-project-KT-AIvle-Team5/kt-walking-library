@@ -1,8 +1,8 @@
 package miniprojectver.infra;
 
 import lombok.RequiredArgsConstructor;
-import miniprojectver.domain.Point;
-import miniprojectver.domain.PointRepository;
+import miniprojectver.domain.*;
+import miniprojectver.message.*;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,5 +18,23 @@ public class PointController {
         return repo.findByUserId(userId)
                    .map(Point::getCurrentPoint)
                    .orElse(0);
+    }
+
+    /* 포인트 충전 */
+    @PostMapping("/charge")
+    public void chargePoint(@RequestBody PointPurchaseRequested command) {
+        Point.chargePoint(command);
+    }
+
+    /* 구독권 포인트 차감 */
+    @PostMapping("/deduct/subscription")
+    public void deductForSubscription(@RequestBody SubscriptionRequested command) {
+        Point.deductForSubscription(command);
+    }
+
+    /* 도서 구매 포인트 차감 */
+    @PostMapping("/deduct/book")
+    public void deductForBook(@RequestBody BookPurchaseRequested command) {
+        Point.deductForBook(command);
     }
 }
