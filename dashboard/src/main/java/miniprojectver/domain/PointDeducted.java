@@ -11,5 +11,5 @@ public class PointDeducted extends AbstractEvent {
     private String userId;
     private Integer amountPoint;
     private String bookId;
-    private String subscriptionId;
+    private Long subscriptionId;
 }
