@@ -1,7 +1,5 @@
 package miniprojectver.infra;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import miniprojectver.AuthApplication;
 import miniprojectver.config.kafka.KafkaProcessor;
 import org.springframework.beans.BeanUtils;
@@ -12,49 +10,37 @@ import org.springframework.transaction.support.TransactionSynchronizationAdapter
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.MimeTypeUtils;
 
-//<<< Clean Arch / Outbound Adaptor
 public class AbstractEvent {
-
     String eventType;
     Long timestamp;
 
-    public AbstractEvent(Object aggregate) {
+    public AbstractEvent(Object aggregate){
         this();
         BeanUtils.copyProperties(aggregate, this);
     }
 
-    public AbstractEvent() {
+    public AbstractEvent(){
         this.setEventType(this.getClass().getSimpleName());
         this.timestamp = System.currentTimeMillis();
     }
 
-    public void publish() {
-        /**
-         * spring streams 방식
-         */
-        KafkaProcessor processor = AuthApplication.applicationContext.getBean(
-            KafkaProcessor.class
-        );
+    public void publish(){
+        KafkaProcessor processor = AuthApplication.applicationContext.getBean(KafkaProcessor.class);
         MessageChannel outputChannel = processor.outboundTopic();
-
-        outputChannel.send(
-            MessageBuilder
-                .withPayload(this)
-                .setHeader(
-                    MessageHeaders.CONTENT_TYPE,
-                    MimeTypeUtils.APPLICATION_JSON
-                )
-                .setHeader("type", getEventType())
-                .build()
+        outputChannel.send(MessageBuilder
+            .withPayload(this)
+            .setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON)
+            .setHeader("type", getEventType())
+            .build()
         );
     }
 
-    public void publishAfterCommit() {
+    public void publishAfterCommit(){
         TransactionSynchronizationManager.registerSynchronization(
             new TransactionSynchronizationAdapter() {
                 @Override
                 public void afterCompletion(int status) {
-                    // status가 STATUS_COMMITTED 일 때만 publish 하도록 변경
+                    // status가 STATUS_COMMITTED 일 때만 publish 하도록 보장합니다.
                     if (status == STATUS_COMMITTED) {
                         AbstractEvent.this.publish();
                     }
@@ -62,38 +48,8 @@ public class AbstractEvent {
             }
         );
     }
-
-    public String getEventType() {
-        return eventType;
-    }
-
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
-    }
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public boolean validate() {
-        return getEventType().equals(getClass().getSimpleName());
-    }
-
-    public String toJson() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = null;
-
-        try {
-            json = objectMapper.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("JSON format exception", e);
-        }
-
-        return json;
-    }
+    public String getEventType() { return eventType; }
+    public void setEventType(String eventType) { this.eventType = eventType; }
+    public Long getTimestamp() { return timestamp; }
+    public void setTimestamp(Long timestamp) { this.timestamp = timestamp; }
 }
-//>>> Clean Arch / Outbound Adaptor
