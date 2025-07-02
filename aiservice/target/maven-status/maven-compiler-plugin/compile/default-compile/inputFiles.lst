@@ -1,3 +1,5 @@
+/workspace/kt-walking-library/aiservice/src/main/java/miniprojectver/aiservice/controller/BookSummaryController.java
+/workspace/kt-walking-library/aiservice/src/main/java/miniprojectver/aiservice/service/TextSummarizationService.java
 /workspace/kt-walking-library/aiservice/src/main/java/miniprojectver/aiservice/AiServiceApplication.java
 /workspace/kt-walking-library/aiservice/src/main/java/miniprojectver/aiservice/controller/AiController.java
 /workspace/kt-walking-library/aiservice/src/main/java/miniprojectver/aiservice/controller/BookAiController.java

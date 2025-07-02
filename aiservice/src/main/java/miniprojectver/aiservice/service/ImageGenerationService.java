@@ -15,8 +15,9 @@ public class ImageGenerationService {
     public String generateCoverImage(String title, String author) {
         OpenAiService service = new OpenAiService(openaiApiKey);
 
+        String prompt = "Beautiful and attractive book cover for a book titled '" + title + "' by " + author;
         CreateImageRequest request = CreateImageRequest.builder()
-                .prompt("pretty book cover for '" + title)
+                .prompt(prompt)
                 .size("512x512")
                 .n(1)
                 .build();

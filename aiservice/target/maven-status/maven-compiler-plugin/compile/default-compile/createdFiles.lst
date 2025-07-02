@@ -1,4 +1,6 @@
-miniprojectver/aiservice/AiServiceApplication.class
-miniprojectver/aiservice/controller/AiController.class
 miniprojectver/aiservice/service/ImageGenerationService.class
+miniprojectver/aiservice/controller/BookSummaryController.class
 miniprojectver/aiservice/controller/BookAiController.class
+miniprojectver/aiservice/controller/AiController.class
+miniprojectver/aiservice/AiServiceApplication.class
+miniprojectver/aiservice/service/TextSummarizationService.class
