@@ -17,7 +17,7 @@ services:
   aiservice:
     build: ./aiservice # Dockerfile이 있는 경로
     ports:
-      - "8089:8080"
+      - "8089:8089"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
