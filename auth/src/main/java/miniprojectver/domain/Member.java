@@ -2,11 +2,9 @@ package miniprojectver.domain;
 
 import javax.persistence.*;
 import org.springframework.beans.BeanUtils;
-import lombok.Data;
 
 @Entity
 @Table(name="Member_table")
-@Data
 public class Member {
 
     @Id
@@ -24,7 +22,22 @@ public class Member {
     public void onPostPersist(){
         MemberSignedUp memberSignedUp = new MemberSignedUp();
         BeanUtils.copyProperties(this, memberSignedUp);
-        // 이 코드가 정상 동작하려면 AbstractEvent와 MemberSignedUp 클래스가 올바르게 생성되어 있어야 합니다.
         memberSignedUp.publishAfterCommit();
     }
+
+    // --- Getters and Setters ---
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getLoginId() { return loginId; }
+    public void setLoginId(String loginId) { this.loginId = loginId; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public Boolean getIsKtCustomer() { return isKtCustomer; }
+    public void setIsKtCustomer(Boolean isKtCustomer) { this.isKtCustomer = isKtCustomer; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }
