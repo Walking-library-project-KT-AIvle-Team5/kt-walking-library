@@ -18,3 +18,76 @@ dist/
 *.log
 .env
 aws/
+# ---------------------------
+# ☕ Java & Maven
+# ---------------------------
+target/
+*.class
+*.jar
+*.war
+*.log
+*.pid
+*.hprof
+
+# Maven specific
+.mvn/
+!**/maven-wrapper.jar
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+
+# ---------------------------
+# 🐳 Docker
+# ---------------------------
+*.env
+docker-compose.override.yml
+docker-compose.dev.yml
+.dockerignore
+
+# ---------------------------
+# 🧪 Test & Coverage
+# ---------------------------
+test-output/
+coverage/
+jacoco.exec
+*.lcov
+
+# ---------------------------
+# 🛠 IDEs & Editors
+# ---------------------------
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+out/
+
+# VSCode
+.vscode/
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# OS / System
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# ---------------------------
+# 🌐 Frontend (Vite, Node)
+# ---------------------------
+frontend/node_modules/
+frontend/.env
+frontend/.env.*
+frontend/dist/
+frontend/.vite/
+
+# ---------------------------
+# ⚙ Gitpod (선택)
+# ---------------------------
+.gitpod.yml
+.gitpod.Dockerfile

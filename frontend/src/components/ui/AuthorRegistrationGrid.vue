@@ -141,7 +141,7 @@ export default {
     components:{
     },
     data: () => ({
-        path: 'authorRegistrations',
+        path: 'authors',
     }),
     watch: {
     },
