@@ -1,8 +1,6 @@
 package miniprojectver.domain;
 
-import java.util.*;
 import lombok.*;
-import miniprojectver.domain.*;
 import miniprojectver.infra.AbstractEvent;
 
 @Data
@@ -13,7 +11,7 @@ public class ManuscriptPublicationRequested extends AbstractEvent {
     private String title;
     private Long authorId;
     private String content;
-    private Object status;
+    private ManuscriptStatus status;  
     private String category;
     private String imagePath;
     private String summary;
