@@ -95,7 +95,7 @@ import {
         <VerticalNavLink
             :item="{
                 title: '작가',
-                to: '/authorRegistrations',
+                to: '/authors',
             }"
         />
     </ul>

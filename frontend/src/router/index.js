@@ -60,7 +60,7 @@ const router = createRouter({
       component: () => import('../components/ui/PlatformManagementGrid.vue'),
     },
     {
-      path: '/authorRegistrations',
+      path: '/authors',
       component: () => import('../components/ui/AuthorRegistrationGrid.vue'),
     },
   ],

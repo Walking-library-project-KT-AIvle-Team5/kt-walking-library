@@ -196,6 +196,19 @@ services:
     restart: on-failure
     networks: # 이 부분 추가 또는 확인
       - kt-network
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app          # 코드 변경 즉시 반영
+      - /app/node_modules        # 컨테이너 내부 node_modules 보호
+    command: npm run dev         # Vite 개발 서버 실행
+    restart: unless-stopped
+    networks:
+      - kt-network
 
 # --- 최상위 networks 정의 ---
 networks:

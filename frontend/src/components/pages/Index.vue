@@ -86,7 +86,7 @@ export default {
       },
       {
           text: "작가",
-          link: "/authorRegistrations",
+          link: "/authors",
       },
     ],
   }),
