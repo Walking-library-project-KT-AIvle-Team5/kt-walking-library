@@ -26,8 +26,8 @@ public class AiController {
     @GetMapping("/generate-cover-test")
     @ResponseBody
     public String generateCoverTest() {
-        String title = "AI 책";
-        String author = "홍길동";
+        String title = "AI 책";  // 실제 책이름 받아오기
+        String author = "홍길동";  // 실제 작가명 받아오기 
 
         String generatedImageUrl = "https://dummyimage.com/400x600/000/fff&text=" + title;
 

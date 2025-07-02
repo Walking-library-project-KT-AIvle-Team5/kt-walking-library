@@ -16,7 +16,7 @@ public class ImageGenerationService {
         OpenAiService service = new OpenAiService(openaiApiKey);
 
         CreateImageRequest request = CreateImageRequest.builder()
-                .prompt("Book cover for '" + title + "' by " + author)
+                .prompt("pretty book cover for '" + title)
                 .size("512x512")
                 .n(1)
                 .build();
