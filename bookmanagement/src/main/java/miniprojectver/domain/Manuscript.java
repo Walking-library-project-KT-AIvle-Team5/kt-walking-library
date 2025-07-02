@@ -41,13 +41,13 @@ private Long authorId;
 private String content;    
     
     
-private New Enumeration status;    
+private ManuscriptStatus status = ManuscriptStatus.DRAFT;
     
     
-private Boolean imageRequested;    
+private Boolean imageRequested = false;
     
     
-private Boolean aiSummaryRequested;    
+private Boolean aiSummaryRequested = false;
     
     
 private String category;    

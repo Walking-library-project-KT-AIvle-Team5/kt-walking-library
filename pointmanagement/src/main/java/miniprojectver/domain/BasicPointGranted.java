@@ -8,15 +8,18 @@ import miniprojectver.infra.AbstractEvent;
 
 //<<< DDD / Domain Event
 @Data
+@EqualsAndHashCode(callSuper=false)
 @ToString
 public class BasicPointGranted extends AbstractEvent {
 
     private String userId;
-    private String amountPoint;
+    private Integer amount;
 
-    public BasicPointGranted(Point aggregate) {
-        super(aggregate);
-    }
+    public BasicPointGranted(Point aggregate, Integer amount) {
+    super(aggregate);
+    this.userId = aggregate.getUserId();
+    this.amount = amount;
+}
 
     public BasicPointGranted() {
         super();

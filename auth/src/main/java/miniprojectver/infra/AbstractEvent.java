@@ -40,7 +40,6 @@ public class AbstractEvent {
             new TransactionSynchronizationAdapter() {
                 @Override
                 public void afterCompletion(int status) {
-                    // status가 STATUS_COMMITTED 일 때만 publish 하도록 보장합니다.
                     if (status == STATUS_COMMITTED) {
                         AbstractEvent.this.publish();
                     }

@@ -7,12 +7,12 @@ import miniprojectver.infra.AbstractEvent;
 
 @Data
 @ToString
+@EqualsAndHashCode(callSuper = false)  // 이 한 줄 추가
 public class BookPurchaseRequested extends AbstractEvent {
-
     private Long purchaseRequestId;
     private String userId;
     private String bookId;
     private Object price;
     private Object point;
-    private Date timestamp;
+    // timestamp는 상속받아서 사용 (Long 타입 유지)
 }

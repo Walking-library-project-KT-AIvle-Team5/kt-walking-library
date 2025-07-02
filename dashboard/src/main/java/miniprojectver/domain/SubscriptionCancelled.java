@@ -11,6 +11,6 @@ public class SubscriptionCancelled extends AbstractEvent {
     private Long subscriptionId;
     private String userId;
     private String status;
-    private Date cancelledAt;
-    private Date timestamp;
+    private Long cancelledAt;
+    private Long timestamp;
 }

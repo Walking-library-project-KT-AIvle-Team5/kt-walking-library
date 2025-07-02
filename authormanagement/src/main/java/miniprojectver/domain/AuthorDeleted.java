@@ -11,14 +11,10 @@ import miniprojectver.infra.AbstractEvent;
 @ToString
 public class AuthorDeleted extends AbstractEvent {
 
-    private Long authorId;
-    private String authorName;
-    private String authorInfo;
-    private String authorPortfolio;
-    private Boolean authorRole;
-    private Date craeteDate;
+    private String authorId;
+    private Long memberId;
 
-    public AuthorDeleted(AuthorRegistration aggregate) {
+    public AuthorDeleted(Author aggregate) {
         super(aggregate);
     }
 

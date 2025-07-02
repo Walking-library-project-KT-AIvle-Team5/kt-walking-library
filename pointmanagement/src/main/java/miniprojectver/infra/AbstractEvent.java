@@ -12,15 +12,15 @@ import org.springframework.transaction.support.TransactionSynchronizationAdapter
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.MimeTypeUtils;
 
-//<<< Clean Arch / Outbound Adaptor
 public class AbstractEvent {
 
     String eventType;
     Long timestamp;
 
+    // ✅ eventType, timestamp 제외하고 복사
     public AbstractEvent(Object aggregate) {
         this();
-        BeanUtils.copyProperties(aggregate, this);
+        BeanUtils.copyProperties(aggregate, this, "eventType", "timestamp");
     }
 
     public AbstractEvent() {
@@ -29,21 +29,16 @@ public class AbstractEvent {
     }
 
     public void publish() {
-        /**
-         * spring streams 방식
-         */
-        KafkaProcessor processor = PointmanagementApplication.applicationContext.getBean(
-            KafkaProcessor.class
-        );
+        KafkaProcessor processor = PointmanagementApplication
+            .applicationContext
+            .getBean(KafkaProcessor.class);
+
         MessageChannel outputChannel = processor.outboundTopic();
 
         outputChannel.send(
             MessageBuilder
                 .withPayload(this)
-                .setHeader(
-                    MessageHeaders.CONTENT_TYPE,
-                    MimeTypeUtils.APPLICATION_JSON
-                )
+                .setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON)
                 .setHeader("type", getEventType())
                 .build()
         );
@@ -54,7 +49,24 @@ public class AbstractEvent {
             new TransactionSynchronizationAdapter() {
                 @Override
                 public void afterCompletion(int status) {
-                    AbstractEvent.this.publish();
+                    try {
+                        KafkaProcessor processor =
+                            PointmanagementApplication
+                                .applicationContext
+                                .getBean(KafkaProcessor.class);
+
+                        processor.outboundTopic().send(
+                            MessageBuilder
+                                .withPayload(AbstractEvent.this)
+                                .setHeader("type", getEventType()) // ✅ 중요: type 헤더 추가
+                                .setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON)
+                                .build()
+                        );
+
+                    } catch (Exception e) {
+                        System.out.println("⚠️ Kafka publish 실패: " + e.getMessage());
+                        e.printStackTrace();
+                    }
                 }
             }
         );
@@ -82,15 +94,10 @@ public class AbstractEvent {
 
     public String toJson() {
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = null;
-
         try {
-            json = objectMapper.writeValueAsString(this);
+            return objectMapper.writeValueAsString(this);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("JSON format exception", e);
         }
-
-        return json;
     }
 }
-//>>> Clean Arch / Outbound Adaptor

@@ -20,11 +20,6 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody Member member) {
-        String encodedPassword = passwordEncoder.encode(member.getPassword());
-        member.setPassword(encodedPassword);
 
-        Member savedMember = memberRepository.save(member);
-        return ResponseEntity.ok(savedMember);
     }
 }

@@ -12,10 +12,14 @@ import miniprojectver.infra.AbstractEvent;
 public class AuthorRegistrationRequested extends AbstractEvent {
 
     private Long authorId;
+    private Long memberId;
     private String authorName;
     private String authorInfo;
+    private String portfolio;
+    private String authorRole;
+    private Date requestedDate;
 
-    public AuthorRegistrationRequested(AuthorRegistration aggregate) {
+    public AuthorRegistrationRequested(Author aggregate) {
         super(aggregate);
     }
 
