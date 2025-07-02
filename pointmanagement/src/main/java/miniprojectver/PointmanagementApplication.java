@@ -1,21 +1,14 @@
 package miniprojectver;
 
-import miniprojectver.config.kafka.KafkaProcessor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.openfeign.EnableFeignClients;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.context.ApplicationContext;
+import org.springframework.cloud.stream.annotation.EnableBinding; // ✅ 이거 추가!
+import miniprojectver.config.kafka.KafkaProcessor;           // ✅ KafkaProcessor import도 필요
 
 @SpringBootApplication
 @EnableBinding(KafkaProcessor.class)
-@EnableFeignClients
 public class PointmanagementApplication {
-
-    public static ApplicationContext applicationContext;
-
     public static void main(String[] args) {
-        applicationContext =
-            SpringApplication.run(PointmanagementApplication.class, args);
+        SpringApplication.run(PointmanagementApplication.class, args);
     }
 }

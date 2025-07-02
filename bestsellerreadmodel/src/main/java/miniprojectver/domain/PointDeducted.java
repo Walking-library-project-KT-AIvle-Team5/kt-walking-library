@@ -6,11 +6,10 @@ import lombok.Data;
 import miniprojectver.infra.AbstractEvent;
 
 @Data
-public class SubscriptionCancelled extends AbstractEvent {
+public class PointDeducted extends AbstractEvent {
 
-    private Long subscriptionId;
     private String userId;
-    private String status;
-    private Long cancelledAt;
-    private Long timestamp;
+    private Integer amountPoint;
+    private String bookId;
+    private Long subscriptionId;
 }

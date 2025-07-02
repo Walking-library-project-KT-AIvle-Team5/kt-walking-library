@@ -4,7 +4,9 @@ import lombok.*;
 import miniprojectver.infra.AbstractEvent;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class BonusPointGranted extends AbstractEvent {
+public class SubscriptionStatusChecked extends AbstractEvent {
     private String userId;
-    private Long amount;   // 항상 5000L
+    private Long bookId;
+    private Boolean isSubscribed;
+    private Long price;
 }

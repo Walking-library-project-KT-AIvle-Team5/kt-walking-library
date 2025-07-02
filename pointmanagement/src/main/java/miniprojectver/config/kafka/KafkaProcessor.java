@@ -10,8 +10,8 @@ public interface KafkaProcessor {
     String OUTPUT = "event-out";
 
     @Input(INPUT)
-    SubscribableChannel inboundTopic();
+    SubscribableChannel input();
 
     @Output(OUTPUT)
-    MessageChannel outboundTopic();
+    MessageChannel output();  // ✅ 이걸로 바꿔야 PolicyHandler에서 processor.output() 사용 가능
 }
