@@ -14,7 +14,7 @@ import java.util.Map;
 //<<< Clean Arch / Inbound Adaptor
 
 @RestController
-// @RequestMapping(value="/subscribeManagements")
+@RequestMapping("/subscribers") 
 @Transactional
 public class SubscribeManagementController {
 
