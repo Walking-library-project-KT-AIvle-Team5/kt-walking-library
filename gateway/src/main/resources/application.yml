@@ -32,9 +32,13 @@ spring:
         - id: libraryplatform
           uri: http://localhost:8087
           predicates:
-            - Path=/bookPublications/**, /platformManagements/**, 
+            - Path=/bookPublications/**, /platformManagements/**,
+        - id: aiservice
+          uri: http://localhost:8089
+          predicates:
+            - Path=/ai/**
         - id: authormanagement
-          uri: http://localhost:8088
+          uri: http://localhost:8090
           predicates:
             - Path=/authorRegistrations/**, 
         - id: frontend

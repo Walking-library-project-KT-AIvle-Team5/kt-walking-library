@@ -1,123 +1,207 @@
-version: '2'
+version: '3.8' # Docker Compose 파일 형식 버전. 최신 버전 사용 권장
+
 services:
-  zookeeper:
-    image: confluentinc/cp-zookeeper:latest
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    ports:
-      - 2181:2181
-  kafka:
+  # Zookeeper 서비스 블록은 완전히 삭제되어야 합니다.
+  # 현재 주석 처리되어 있지만, 이 부분을 파일에서 완전히 지우세요.
+  # zookeeper:
+  #   image: confluentinc/cp-zookeeper:latest
+  #   environment:
+  #     ZOOKEEPER_CLIENT_PORT: 2181
+  #     ZOOKEEPER_TICK_TIME: 2000
+  #   ports:
+  #     - 2181:2181
+  #   restart: unless-stopped
+
+  kafka: # 이제 이 서비스가 Kraft 모드로 동작합니다.
     image: confluentinc/cp-kafka:latest
-    container_name: my-kafka
-    depends_on:
-      - zookeeper
+    container_name: kafka # 컨테이너 이름을 'kafka'로 명시합니다. (my-kafka가 아닌 'kafka')
     ports:
-      - 9092:9092
+      - "9092:9092"   # 클라이언트 통신용
     environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://my-kafka:29092,PLAINTEXT_HOST://my-kafka:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      # KRaft 모드 필수 설정
+      CLUSTER_ID: "abcdef01-2345-6789-abcd-ef0123456789" # 고유한 클러스터 ID (이전에 사용한 값 그대로 유지)
+      KAFKA_KRAFT_MODE: "true" # Kraft 모드 활성화 (매우 중요!)
+      KAFKA_PROCESS_ROLES: "broker,controller" # 이 Kafka 인스턴스가 브로커이자 컨트롤러 역할 수행 (매우 중요!)
+      KAFKA_NODE_ID: "1" # 이 브로커의 고유 ID (Kraft 모드에서 필수)
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093" # 컨트롤러 쿼럼 정보 (서비스 이름:포트)
+
+      # 리스너 설정
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      # 중요: ADVERTISED_LISTENERS를 'localhost' 대신 'kafka' 서비스 이름으로 변경합니다.
+      # 다른 컨테이너들이 이 서비스 이름을 통해 Kafka에 접속할 수 있게 합니다.
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+
+      # 기타 필수 설정
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_LOG_RETENTION_HOURS: 168
+      KAFKA_LOG_DIRS: "/var/lib/kafka/data"
+    volumes:
+      - kafka-data:/var/lib/kafka/data # 호스트의 kafka-data 폴더를 마운트
+    # depends_on: - zookeeper <-- 이 줄은 더 이상 필요 없으므로, 원래 있었다면 제거됩니다.
+    healthcheck: # Kafka 브로커의 상태를 확인하는 헬스체크 추가 (권장) - 주석 해제!
+      test: ["CMD-SHELL", "kafka-topics --list --bootstrap-server localhost:9092 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks: # 이 부분 주석 해제!
+      - kt-network # 정의된 네트워크를 사용하도록 명시
 
+  # --- 마이크로서비스 정의 (기존 내용 유지) ---
   auth:
-    depends_on: 
+    depends_on:
       - kafka
     image: adoptopenjdk/maven-openjdk11:latest
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     command: mvn spring-boot:run
     ports:
-      - 8082:8082
+      - 8082:8080 # 호스트 8082 -> 컨테이너 8080 (Gateway 설정과 일치)
     working_dir: /usr/src
     volumes:
       - ./auth:/usr/src
       - ./maven-repo:/root/.m2
-      
+    restart: on-failure
+    networks: # 이 부분 추가 또는 확인 (다른 모든 서비스에도 동일하게)
+      - kt-network
+
   dashboard:
-    depends_on: 
+    depends_on:
       - kafka
     image: adoptopenjdk/maven-openjdk11:latest
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     command: mvn spring-boot:run
     ports:
-      - 8083:8083
+      - 8083:8080 # 호스트 8083 -> 컨테이너 8080 (Gateway 설정과 일치)
     working_dir: /usr/src
     volumes:
       - ./dashboard:/usr/src
       - ./maven-repo:/root/.m2
-      
+    restart: on-failure
+    networks: # 이 부분 추가 또는 확인
+      - kt-network
+
   bookmanagement:
-    depends_on: 
+    depends_on:
       - kafka
     image: adoptopenjdk/maven-openjdk11:latest
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     command: mvn spring-boot:run
     ports:
-      - 8084:8084
+      - 8084:8080 # 호스트 8084 -> 컨테이너 8080 (Gateway 설정과 일치)
     working_dir: /usr/src
     volumes:
       - ./bookmanagement:/usr/src
       - ./maven-repo:/root/.m2
-      
+    restart: on-failure
+    networks: # 이 부분 추가 또는 확인
+      - kt-network
+
   pointmanagement:
-    depends_on: 
+    depends_on:
       - kafka
     image: adoptopenjdk/maven-openjdk11:latest
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     command: mvn spring-boot:run
     ports:
-      - 8085:8085
+      - 8085:8080 # 호스트 8085 -> 컨테이너 8080 (Gateway 설정과 일치)
     working_dir: /usr/src
     volumes:
       - ./pointmanagement:/usr/src
       - ./maven-repo:/root/.m2
-      
+    restart: on-failure
+    networks: # 이 부분 추가 또는 확인
+      - kt-network
+
   subscribermanagement:
-    depends_on: 
+    depends_on:
       - kafka
     image: adoptopenjdk/maven-openjdk11:latest
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     command: mvn spring-boot:run
     ports:
-      - 8086:8086
+      - 8086:8080 # 호스트 8086 -> 컨테이너 8080 (Gateway 설정과 일치)
     working_dir: /usr/src
     volumes:
       - ./subscribermanagement:/usr/src
       - ./maven-repo:/root/.m2
-      
+    restart: on-failure
+    networks: # 이 부분 추가 또는 확인
+      - kt-network
+
   libraryplatform:
-    depends_on: 
+    depends_on:
       - kafka
     image: adoptopenjdk/maven-openjdk11:latest
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     command: mvn spring-boot:run
     ports:
-      - 8087:8087
+      - 8087:8080 # 호스트 8087 -> 컨테이너 8080 (Gateway 설정과 일치)
     working_dir: /usr/src
     volumes:
       - ./libraryplatform:/usr/src
       - ./maven-repo:/root/.m2
-      
+    restart: on-failure
+    networks: # 이 부분 추가 또는 확인
+      - kt-network
+
   authormanagement:
-    depends_on: 
+    depends_on:
       - kafka
     image: adoptopenjdk/maven-openjdk11:latest
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     command: mvn spring-boot:run
     ports:
-      - 8088:8088
+      - 8090:8080 # 호스트 8090 -> 컨테이너 8080 (Gateway 설정과 일치)
     working_dir: /usr/src
     volumes:
       - ./authormanagement:/usr/src
       - ./maven-repo:/root/.m2
-      
+    restart: on-failure
+    networks: # 이 부분 추가 또는 확인
+      - kt-network
+
+  # --- API Gateway 서비스 추가 ---
+  gateway:
+    depends_on:
+      - auth
+      - dashboard
+      - bookmanagement
+      - pointmanagement
+      - subscribermanagement
+      - libraryplatform
+      - authormanagement
+      - kafka # Gateway가 Kafka와 직접 통신하지 않더라도, 다른 서비스들이 Kafka에 의존하므로 Docker Compose 네트워크에서 서비스 이름으로 참조할 수 있도록 의존성 명시
+    image: adoptopenjdk/maven-openjdk11:latest
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    command: mvn spring-boot:run
+    ports:
+      - 8088:8080
+    working_dir: /usr/src
+    volumes:
+      - ./gateway:/usr/src
+      - ./maven-repo:/root/.m2
+    restart: on-failure
+    networks: # 이 부분 추가 또는 확인
+      - kt-network
+
+# --- 최상위 networks 정의 ---
+networks:
+  kt-network: # 이 부분만 남기고, default 네트워크 관련 정의는 삭제합니다.
+
+volumes:
+  maven-repo:
+    driver: local
+  kafka-data:

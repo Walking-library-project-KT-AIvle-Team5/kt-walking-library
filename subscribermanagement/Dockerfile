@@ -1,3 +1,4 @@
+#FROM maven:3-amazoncorretto-17-alpine
 FROM openjdk:15-jdk-alpine
 COPY target/*SNAPSHOT.jar app.jar
 EXPOSE 8080
