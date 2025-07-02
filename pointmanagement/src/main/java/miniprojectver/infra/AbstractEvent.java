@@ -1,103 +1,27 @@
 package miniprojectver.infra;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import miniprojectver.PointmanagementApplication;
-import miniprojectver.config.kafka.KafkaProcessor;
-import org.springframework.beans.BeanUtils;
-import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.MessageHeaders;
+import lombok.Getter;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
-import org.springframework.util.MimeTypeUtils;
 
-public class AbstractEvent {
+import java.time.LocalDateTime;
 
-    String eventType;
-    Long timestamp;
+@Getter
+public abstract class AbstractEvent {
 
-    // ✅ eventType, timestamp 제외하고 복사
-    public AbstractEvent(Object aggregate) {
-        this();
-        BeanUtils.copyProperties(aggregate, this, "eventType", "timestamp");
-    }
+    private final String eventType = getClass().getSimpleName();
+    private final String timestamp = LocalDateTime.now().toString();
 
-    public AbstractEvent() {
-        this.setEventType(this.getClass().getSimpleName());
-        this.timestamp = System.currentTimeMillis();
-    }
-
-    public void publish() {
-        KafkaProcessor processor = PointmanagementApplication
-            .applicationContext
-            .getBean(KafkaProcessor.class);
-
-        MessageChannel outputChannel = processor.outboundTopic();
-
-        outputChannel.send(
-            MessageBuilder
-                .withPayload(this)
-                .setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON)
-                .setHeader("type", getEventType())
-                .build()
-        );
-    }
-
-    public void publishAfterCommit() {
-        TransactionSynchronizationManager.registerSynchronization(
-            new TransactionSynchronizationAdapter() {
-                @Override
-                public void afterCompletion(int status) {
-                    try {
-                        KafkaProcessor processor =
-                            PointmanagementApplication
-                                .applicationContext
-                                .getBean(KafkaProcessor.class);
-
-                        processor.outboundTopic().send(
-                            MessageBuilder
-                                .withPayload(AbstractEvent.this)
-                                .setHeader("type", getEventType()) // ✅ 중요: type 헤더 추가
-                                .setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON)
-                                .build()
-                        );
-
-                    } catch (Exception e) {
-                        System.out.println("⚠️ Kafka publish 실패: " + e.getMessage());
-                        e.printStackTrace();
-                    }
-                }
-            }
-        );
-    }
-
-    public String getEventType() {
-        return eventType;
-    }
-
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
-    }
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public boolean validate() {
-        return getEventType().equals(getClass().getSimpleName());
-    }
-
-    public String toJson() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("JSON format exception", e);
+    @JsonIgnore
+    public Message<String> toMessage(){
+        try{
+            String json = new ObjectMapper().writeValueAsString(this);
+            return MessageBuilder.withPayload(json)
+                    .setHeader("eventType", eventType).build();
+        }catch(Exception e){
+            throw new RuntimeException(e);
         }
     }
 }

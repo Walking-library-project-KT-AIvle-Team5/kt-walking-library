@@ -3,11 +3,12 @@ package miniprojectver.domain;
 import lombok.*;
 import miniprojectver.infra.AbstractEvent;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PointCharged extends AbstractEvent {
-    private String userId;
-    private Long amount;
+public abstract class PointAmount extends AbstractEvent {
+    private BigDecimal amount;
 }
