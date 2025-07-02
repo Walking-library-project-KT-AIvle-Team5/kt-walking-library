@@ -82,6 +82,11 @@ public static void checkSubscription(BookPurchaseRequested bookPurchaseRequested
     SubscriptionStatusChecked event = new SubscriptionStatusChecked();
     event.setUserId(userId);
     event.setIsSubscribed(isSubscribed);
+    event.setBookId(bookPurchaseRequested.getBookId());
+    event.setPrice(bookPurchaseRequested.getPrice());
+    event.setPurchaseRequestId(bookPurchaseRequested.getPurchaseRequestId());
+    event.setTimestamp(bookPurchaseRequested.getPurchaseRequestId());
+
     event.publishAfterCommit();
 }
 
