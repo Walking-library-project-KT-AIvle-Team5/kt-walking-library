@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8080  # 제일 상단의 기본 포트
 
 spring:
   application:
@@ -46,9 +46,6 @@ logging:
     org.hibernate.type: trace
     org.springframework.cloud: debug
 
-server:
-  port: 8087
-
 ---
 
 spring:
@@ -84,6 +81,3 @@ spring:
 subscription:
   api:
     url: http://subscribermanagement:8080/subscribers
-
-server:
-  port: 8087

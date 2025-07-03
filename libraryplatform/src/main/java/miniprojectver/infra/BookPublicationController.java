@@ -1,16 +1,10 @@
 package miniprojectver.infra;
 
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import miniprojectver.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-//<<< Clean Arch / Inbound Adaptor
 
 @RestController
 @RequestMapping("/bookPublications")
@@ -18,49 +12,63 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookPublicationController {
 
     @Autowired
-    BookPublicationRepository bookPublicationRepository;
+    private BookPublicationRepository bookPublicationRepository;
 
-    // 출간 심사 승인 또는 반려 처리
+    // 전체 도서 목록 조회
+    @GetMapping("/list")
+    public Iterable<BookPublication> listAll() {
+        return bookPublicationRepository.findAll();
+    }
+
+    // 출간 심사 처리 (승인 또는 반려)
     @PutMapping("/{id}/review")
     public String reviewBookPublication(@PathVariable Long id, @RequestParam String decision) {
-
+        System.out.println(">>> reviewBookPublication 진입: id=" + id + ", decision=" + decision);
         Optional<BookPublication> optionalBook = bookPublicationRepository.findById(id);
-        if (optionalBook.isPresent()) {
-            BookPublication book = optionalBook.get();
 
-            if ("approve".equalsIgnoreCase(decision)) {
-                book.setStatus("APPROVED");
-            } else if ("reject".equalsIgnoreCase(decision)) {
-                book.setStatus("REJECTED");
-            } else {
-                return "Decision must be 'approve' or 'reject'.";
-            }
-
-            bookPublicationRepository.save(book); // @PostUpdate 이벤트 트리거
-            return "Book review processed.";
-        } else {
+        if (optionalBook.isEmpty()) {
             return "Book not found.";
+        }
+
+        BookPublication book = optionalBook.get();
+
+        switch (decision.toLowerCase()) {
+            case "approve":
+                book.setStatus(BookStatus.PUBLISHED);
+                break;
+            case "reject":
+                book.setStatus(BookStatus.ARCHIVED);
+                break;
+            default:
+                return "Invalid decision. Must be 'approve' or 'reject'.";
+        }
+
+        try {
+            bookPublicationRepository.save(book);
+            return "Book review processed.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error: " + e.getMessage();
         }
     }
 
     // 도서 내려짐 처리
     @PutMapping("/{id}/unpublish")
     public String unpublishBook(@PathVariable Long id) {
-
         Optional<BookPublication> optionalBook = bookPublicationRepository.findById(id);
-        if (optionalBook.isPresent()) {
-            BookPublication book = optionalBook.get();
-            if ("UNPUBLISHED".equals(book.getStatus())) {
-                return "Book is already unpublished.";
-            }
 
-            book.setStatus("UNPUBLISHED");
-
-            bookPublicationRepository.save(book); // @PostUpdate 이벤트 트리거
-            return "Book unpublished.";
-        } else {
+        if (optionalBook.isEmpty()) {
             return "Book not found.";
         }
+
+        BookPublication book = optionalBook.get();
+
+        if (BookStatus.ARCHIVED.equals(book.getStatus())) {
+            return "Book is already unpublished.";
+        }
+
+        book.setStatus(BookStatus.ARCHIVED);
+        bookPublicationRepository.save(book);
+        return "Book unpublished.";
     }
 }
-//>>> Clean Arch / Inbound Adaptor

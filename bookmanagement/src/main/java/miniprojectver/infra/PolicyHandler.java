@@ -1,9 +1,5 @@
 package miniprojectver.infra;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.naming.NameParser;
-import javax.naming.NameParser;
 import javax.transaction.Transactional;
 import miniprojectver.config.kafka.KafkaProcessor;
 import miniprojectver.domain.*;
@@ -33,15 +29,19 @@ public class PolicyHandler {
     public void wheneverBookPublicationChecked_RegisterBook(
         @Payload BookPublicationChecked bookPublicationChecked
     ) {
-        BookPublicationChecked event = bookPublicationChecked;
         System.out.println(
-            "\n\n##### listener RegisterBook : " +
-            bookPublicationChecked +
-            "\n\n"
+            "\n\n##### listener RegisterBook : " + bookPublicationChecked + "\n\n"
         );
 
-        // Sample Logic //
-        Book.registerBook(event);
+        if (BookStatus.PUBLISHED.equals(bookPublicationChecked.getStatus())) {
+            if (!bookRepository.existsById(bookPublicationChecked.getId())) {
+                Book.registerBook(bookPublicationChecked);
+            } else {
+                System.out.println("Skipped: Book already registered");
+            }
+        } else {
+            System.out.println("Skipped: BookPublicationChecked status is not PUBLISHED");
+        }
     }
 
     @StreamListener(
@@ -51,13 +51,11 @@ public class PolicyHandler {
     public void wheneverPointDeducted_MarkAsBestseller(
         @Payload PointDeducted pointDeducted
     ) {
-        PointDeducted event = pointDeducted;
         System.out.println(
             "\n\n##### listener MarkAsBestseller : " + pointDeducted + "\n\n"
         );
 
-        // Sample Logic //
-        Book.markAsBestseller(event);
+        Book.markAsBestseller(pointDeducted);
     }
 }
 //>>> Clean Arch / Inbound Adaptor

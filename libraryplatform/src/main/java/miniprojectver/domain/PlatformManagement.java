@@ -55,7 +55,8 @@ public static void checkSubscription(BookPurchaseRequested bookPurchaseRequested
     RestTemplate restTemplate = LibraryplatformApplication.applicationContext.getBean(RestTemplate.class);
 
     // subscriberService.url 은 application.yml에 정의되어 있어야 함
-    String url = "http://localhost:8081/subscribers?userId=" + userId;
+    String url = "http://subscribermanagement:8080/subscribers?userId=" + userId;
+
 
     boolean isSubscribed = false;
 
@@ -82,6 +83,11 @@ public static void checkSubscription(BookPurchaseRequested bookPurchaseRequested
     SubscriptionStatusChecked event = new SubscriptionStatusChecked();
     event.setUserId(userId);
     event.setIsSubscribed(isSubscribed);
+    event.setBookId(bookPurchaseRequested.getBookId());
+    event.setPrice(bookPurchaseRequested.getPrice());
+    event.setPurchaseRequestId(bookPurchaseRequested.getPurchaseRequestId());
+    event.setTimestamp(bookPurchaseRequested.getPurchaseRequestId());
+
     event.publishAfterCommit();
 }
 

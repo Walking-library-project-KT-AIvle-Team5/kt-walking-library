@@ -9,8 +9,6 @@ import java.util.Map;
 import javax.persistence.*;
 import lombok.Data;
 import miniprojectver.LibraryplatformApplication;
-import miniprojectver.domain.BookPublicationChecked;
-import miniprojectver.domain.BookUnpublished;
 
 @Entity
 @Table(name = "BookPublication_table")
@@ -23,59 +21,58 @@ public class BookPublication {
     private Long id;
 
     private String title;
-
     private String summaryContent;
-
-    private String summary;
-
+    private String summary ="";
     private String category;
-
-    private String imagepath;
-
+    private String imagepath = "";
     private String contents;
 
-    private String status; // "PENDING", "APPROVED", "REJECTED", "UNPUBLISHED"
+    @Enumerated(EnumType.STRING)
+    private BookStatus status; // "PENDING", "APPROVED", "REJECTED", "UNPUBLISHED"
 
     private Integer price;
 
     @PostUpdate
     public void onPostUpdate() {
-        if ("UNPUBLISHED".equals(this.status)) {
+        if (BookStatus.ARCHIVED.equals(this.status)) {
             BookUnpublished event = new BookUnpublished(this);
             event.publishAfterCommit();
         }
 
-        if ("APPROVED".equals(this.status)) {
+        if (BookStatus.PUBLISHED.equals(this.status)) {
             BookPublicationChecked event = new BookPublicationChecked(this);
             event.publishAfterCommit();
         }
     }
 
     public static BookPublicationRepository repository() {
-        BookPublicationRepository bookPublicationRepository = LibraryplatformApplication.applicationContext.getBean(
-            BookPublicationRepository.class
-        );
-        return bookPublicationRepository;
+        return LibraryplatformApplication.applicationContext.getBean(BookPublicationRepository.class);
     }
 
     //<<< Clean Arch / Port Method
-    public static void requestBookPublication(
-        ManuscriptPublicationRequested manuscriptPublicationRequested
-    ) {
+    public static void requestBookPublication(ManuscriptPublicationRequested event) {
         BookPublication bookPublication = new BookPublication();
-        bookPublication.setTitle(manuscriptPublicationRequested.getTitle());
-        bookPublication.setSummaryContent("요약내용 자동생성"); // or 필요시 API 호출 등
-        bookPublication.setSummary(manuscriptPublicationRequested.getSummary());
-        bookPublication.setContents(manuscriptPublicationRequested.getContent());
-        bookPublication.setCategory(manuscriptPublicationRequested.getCategory());
-        bookPublication.setImagepath(manuscriptPublicationRequested.getImagePath());
-        bookPublication.setPrice(manuscriptPublicationRequested.getPrice());
-        bookPublication.setStatus("PENDING");
+        bookPublication.setTitle(event.getTitle());
+        bookPublication.setSummaryContent(event.getSummaryContent());
+        bookPublication.setSummary(event.getSummary());
+        bookPublication.setContents(event.getContent());
+        bookPublication.setCategory(event.getCategory());
+        bookPublication.setImagepath(event.getImagePath());
+        bookPublication.setPrice(event.getPrice());
+
+        // ManuscriptStatus → BookStatus 매핑
+        ManuscriptStatus manuscriptStatus = event.getStatus();
+            if (manuscriptStatus == ManuscriptStatus.DRAFT || manuscriptStatus == ManuscriptStatus.EDITED) {
+                bookPublication.setStatus(BookStatus.DRAFT);
+            } else if (manuscriptStatus == ManuscriptStatus.PUBLISH_REQUESTED) {
+                bookPublication.setStatus(BookStatus.DRAFT);
+            } else if (manuscriptStatus == ManuscriptStatus.PUBLISHED) {
+                bookPublication.setStatus(BookStatus.PUBLISHED);
+            } else {
+                bookPublication.setStatus(BookStatus.DRAFT);
+            }
 
         repository().save(bookPublication);
-
     }
     //>>> Clean Arch / Port Method
-
 }
-//>>> DDD / Aggregate Root
