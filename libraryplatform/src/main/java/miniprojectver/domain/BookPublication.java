@@ -53,7 +53,7 @@ public class BookPublication {
     public static void requestBookPublication(ManuscriptPublicationRequested event) {
         BookPublication bookPublication = new BookPublication();
         bookPublication.setTitle(event.getTitle());
-        bookPublication.setSummaryContent("요약내용 자동생성");
+        bookPublication.setSummaryContent(event.getSummaryContent());
         bookPublication.setSummary(event.getSummary());
         bookPublication.setContents(event.getContent());
         bookPublication.setCategory(event.getCategory());

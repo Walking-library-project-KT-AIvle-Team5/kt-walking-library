@@ -15,5 +15,6 @@ public class ManuscriptPublicationRequested extends AbstractEvent {
     private String category;
     private String imagePath;
     private String summary;
+    private String summaryContent;
     private Integer price;
 }
