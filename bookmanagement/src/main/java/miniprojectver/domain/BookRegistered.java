@@ -1,9 +1,7 @@
 package miniprojectver.domain;
 
-import java.time.LocalDate;
-import java.util.*;
+import java.util.Date;
 import lombok.*;
-import miniprojectver.domain.*;
 import miniprojectver.infra.AbstractEvent;
 
 //<<< DDD / Domain Event
@@ -19,13 +17,25 @@ public class BookRegistered extends AbstractEvent {
     private String summary;
     private String imagePath;
     private String contents;
-    private Date createAt;
+    private Date publishedAt;
     private Boolean isBestseller;
     private BookStatus status;
     private Integer price;
 
     public BookRegistered(Book aggregate) {
         super(aggregate);
+        this.bookId = aggregate.getBookId();
+        this.bookName = aggregate.getBookName();
+        this.authorId = aggregate.getAuthorId();
+        this.authorName = aggregate.getAuthorName();
+        this.category = aggregate.getCategory();
+        this.summary = aggregate.getSummary();
+        this.imagePath = aggregate.getImagePath();
+        this.contents = aggregate.getContents();
+        this.publishedAt = aggregate.getPublishedAt();
+        this.isBestseller = aggregate.getIsBestseller();
+        this.status = aggregate.getStatus();
+        this.price = aggregate.getPrice();
     }
 
     public BookRegistered() {
