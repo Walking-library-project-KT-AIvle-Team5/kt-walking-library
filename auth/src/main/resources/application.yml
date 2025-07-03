@@ -145,7 +145,4 @@ spring:
           contentType: application/json
         event-out:
           destination: miniprojectver
-          destination: miniprojectver
-          contentType: application/json
-
 
