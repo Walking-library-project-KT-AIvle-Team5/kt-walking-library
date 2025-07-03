@@ -17,7 +17,6 @@ import miniprojectver.domain.MemberJoined;
 @Entity
 @Table(name = "MemberManagement_table")
 @Data
-//<<< DDD / Aggregate Root
 public class MemberManagement {
 
     @Id
@@ -59,5 +58,9 @@ public class MemberManagement {
         );
         return memberManagementRepository;
     }
+
+    // ✅ [추가] 컴파일 에러 해결을 위해 getId() 메소드를 명시적으로 추가합니다.
+    public Long getId() {
+        return this.id;
+    }
 }
-//>>> DDD / Aggregate Root
