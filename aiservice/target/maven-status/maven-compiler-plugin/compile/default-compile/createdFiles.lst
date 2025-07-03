@@ -1,4 +1,11 @@
-miniprojectver/aiservice/controller/AiController.class
-miniprojectver/aiservice/AiServiceApplication.class
+miniprojectver/aiservice/controller/dto/BookCategoryRequest.class
+miniprojectver/aiservice/controller/SubscriptionController.class
 miniprojectver/aiservice/service/ImageGenerationService.class
 miniprojectver/aiservice/controller/BookAiController.class
+miniprojectver/aiservice/service/PriceCalculationService.class
+miniprojectver/aiservice/controller/AiController.class
+miniprojectver/aiservice/AiServiceApplication.class
+miniprojectver/aiservice/service/TextSummarizationService.class
+miniprojectver/aiservice/service/BookCategoryClassificationService.class
+miniprojectver/aiservice/service/SubscriptionService.class
+miniprojectver/aiservice/controller/BookCategoryController.class
