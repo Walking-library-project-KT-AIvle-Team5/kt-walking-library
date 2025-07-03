@@ -47,26 +47,11 @@ public class AuthController {
         member.setPassword(encodedPassword);
 
         Member savedMember = memberRepository.save(member);
-        
-        // ✅ [삭제] 중복되는 이벤트 발행 로직을 제거합니다.
-        // MemberSignedUp memberSignedUp = new MemberSignedUp(savedMember);
-        // memberSignedUp.publishAfterCommit();
 
         return ResponseEntity.ok(savedMember);
     }
     
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequest) {
-        Optional<Member> optionalMember = memberRepository.findByLoginId(loginRequest.getLoginId());
-
-        if (optionalMember.isPresent()) {
-            Member member = optionalMember.get();
-            if (passwordEncoder.matches(loginRequest.getPassword(), member.getPassword())) {
-                return ResponseEntity.ok(member);
-            }
-        }
-        return ResponseEntity.status(401).body("로그인 정보가 올바르지 않습니다.");
-    }
+    // login 메소드를 완전히 삭제합니다. 이 역할은 Spring Security가 담당하게 됩니다.
     
     @PostMapping("/members/{id}/verify-kt")
     public ResponseEntity<?> verifyKtCustomer(@PathVariable Long id) {
