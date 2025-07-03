@@ -14,3 +14,13 @@ public class BookAiController {
     }
 
 }
+
+@Autowired
+private TextSummarizationService textSummarizationService;
+
+@PostMapping("/ai/summarize")
+public ResponseEntity<String> summarizeText(@RequestBody Map<String, String> request) {
+    String text = request.get("text");
+    String summary = textSummarizationService.summarize(text);
+    return ResponseEntity.ok(summary);
+}
