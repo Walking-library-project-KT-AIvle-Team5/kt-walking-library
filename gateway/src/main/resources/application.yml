@@ -12,7 +12,7 @@ spring:
         - id: auth
           uri: http://localhost:8082
           predicates:
-            - Path=/memberManagements/**, 
+            - Path=/auth/**, 
         - id: dashboard
           uri: http://localhost:8083
           predicates:
@@ -40,7 +40,7 @@ spring:
         - id: authormanagement
           uri: http://localhost:8090
           predicates:
-            - Path=/authorRegistrations/**, 
+            - Path=/authors/**, 
         - id: frontend
           uri: http://localhost:8080
           predicates:
@@ -68,7 +68,7 @@ spring:
         - id: auth
           uri: http://auth:8080
           predicates:
-            - Path=/memberManagements/**, 
+            - Path=/auth/**, 
         - id: dashboard
           uri: http://dashboard:8080
           predicates:
@@ -92,7 +92,7 @@ spring:
         - id: authormanagement
           uri: http://authormanagement:8080
           predicates:
-            - Path=/authorRegistrations/**, 
+            - Path=/authors/**, 
         - id: frontend
           uri: http://frontend:8080
           predicates:

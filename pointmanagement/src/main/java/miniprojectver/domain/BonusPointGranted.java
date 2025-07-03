@@ -1,29 +1,9 @@
 package miniprojectver.domain;
 
-import java.time.LocalDate;
-import java.util.*;
-import lombok.*;
-import miniprojectver.domain.*;
+import lombok.*;  // ✅ 반드시 포함
 import miniprojectver.infra.AbstractEvent;
 
-//<<< DDD / Domain Event
-@Data
-@EqualsAndHashCode(callSuper = false)
-@ToString
-public class BonusPointGranted extends AbstractEvent {
-
-    private String userId;
-    private Integer amount;
-
-    public BonusPointGranted(Point aggregate, Integer amount) {
-    super(aggregate);
-    this.userId = aggregate.getUserId();
-    this.amount = amount;
+@Getter @Setter @AllArgsConstructor
+public class BonusPointGranted  extends AbstractEvent {
+    private String userId; private Long amount;
 }
-
-
-    public BonusPointGranted() {
-        super();
-    }
-}
-//>>> DDD / Domain Event

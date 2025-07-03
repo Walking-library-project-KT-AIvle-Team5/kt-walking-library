@@ -1,3 +1,7 @@
 {
-    "java.compile.nullAnalysis.mode": "automatic"
+  "java.project.referencedLibraries": [
+    "lib/**/*.jar",
+    "target/dependency/*.jar"
+  ],
+  "java.configuration.updateBuildConfiguration": "automatic"
 }
