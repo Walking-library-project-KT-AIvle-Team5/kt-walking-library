@@ -17,5 +17,5 @@ public class BookPublicationChecked extends AbstractEvent {
     private String imagepath;
     private String contents;
     private Integer price;
-    private String status;
+    private BookStatus status;
 }

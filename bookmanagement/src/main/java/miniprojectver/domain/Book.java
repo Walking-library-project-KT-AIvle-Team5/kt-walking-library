@@ -51,7 +51,7 @@ public class Book {
         book.setSummary(bookPublicationChecked.getSummary());
         book.setImagePath(bookPublicationChecked.getImagepath());
         book.setContents(bookPublicationChecked.getContents());
-        book.setStatus(BookStatus.valueOf(bookPublicationChecked.getStatus()));
+        book.setStatus(bookPublicationChecked.getStatus());
         book.setPrice(bookPublicationChecked.getPrice());
         book.setPublishedAt(new Date());
         book.setIsBestseller(false);
