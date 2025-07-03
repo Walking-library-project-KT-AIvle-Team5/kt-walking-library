@@ -17,6 +17,8 @@ spec:
       containers:
         - name: aiservice
           image: "username/aiservice:latest"  # TODO: username을 Docker Hub ID로 수정
+        - name: bookmanagement
+          image: "bbson50/bookmanagement:latest"
           ports:
             - containerPort: 8080
           readinessProbe:

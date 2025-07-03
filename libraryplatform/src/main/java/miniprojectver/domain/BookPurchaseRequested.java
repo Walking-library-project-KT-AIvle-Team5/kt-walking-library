@@ -1,5 +1,6 @@
 package miniprojectver.domain;
 
+import java.math.BigDecimal;
 import java.util.*;
 import lombok.*;
 import miniprojectver.domain.*;
@@ -12,7 +13,7 @@ public class BookPurchaseRequested extends AbstractEvent {
     private Long purchaseRequestId;
     private String userId;
     private String bookId;
-    private Object price;
-    private Object point;
+    private BigDecimal price;
+    private BigDecimal point;
     // timestamp는 상속받아서 사용 (Long 타입 유지)
 }

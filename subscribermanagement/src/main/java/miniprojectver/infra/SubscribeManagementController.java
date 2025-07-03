@@ -43,7 +43,7 @@ public class SubscribeManagementController {
     }
 
     // ✅ [POST] /subscribeManagements : 새로운 구독 생성 API
-    @PostMapping("/request")
+    @PostMapping
     public SubscribeManagement createSubscription(@RequestBody Map<String, String> requestBody) {
         String userId = requestBody.get("userId");
         if (userId == null || userId.trim().isEmpty()) {

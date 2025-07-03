@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: pointmanagement
-          image: "username/pointmanagement:latest"
+          image: "bbson50/pointmanagement:latest"
           ports:
             - containerPort: 8080
           readinessProbe:

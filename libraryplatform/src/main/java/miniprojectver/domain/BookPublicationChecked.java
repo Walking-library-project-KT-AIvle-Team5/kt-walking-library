@@ -1,32 +1,39 @@
 package miniprojectver.domain;
 
-import java.time.LocalDate;
-import java.util.*;
 import lombok.*;
-import miniprojectver.domain.*;
 import miniprojectver.infra.AbstractEvent;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
-//<<< DDD / Domain Event
 @Data
 @ToString
 public class BookPublicationChecked extends AbstractEvent {
 
     private Long id;
     private String title;
+    
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private BookStatus status;
     private String summaryContent;
     private String summary;
     private String category;
     private String imagepath;
     private String contents;
     private Integer price;
-    private String status;
 
     public BookPublicationChecked(BookPublication aggregate) {
         super(aggregate);
+        this.id = aggregate.getId();
+        this.title = aggregate.getTitle();
+        this.status = aggregate.getStatus();
+        this.summaryContent = aggregate.getSummaryContent();
+        this.summary = aggregate.getSummary();
+        this.category = aggregate.getCategory();
+        this.imagepath = aggregate.getImagepath();
+        this.contents = aggregate.getContents();
+        this.price = aggregate.getPrice();
     }
 
     public BookPublicationChecked() {
         super();
     }
 }
-//>>> DDD / Domain Event

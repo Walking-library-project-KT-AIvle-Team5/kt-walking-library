@@ -1,16 +1,9 @@
 package miniprojectver.domain;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDate;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import javax.persistence.*;
 import lombok.Data;
 import miniprojectver.BookmanagementApplication;
-import miniprojectver.domain.BookRegistered;
-import miniprojectver.domain.MarkedAsBestseller;
 
 @Entity
 @Table(name = "Book_table")
@@ -42,72 +35,36 @@ public class Book {
 
     private BookStatus status;
 
+    private Integer price;  // ✅ price 필드 추가
+
     public static BookRepository repository() {
-        BookRepository bookRepository = BookmanagementApplication.applicationContext.getBean(
-            BookRepository.class
-        );
-        return bookRepository;
+        return BookmanagementApplication.applicationContext.getBean(BookRepository.class);
     }
 
     //<<< Clean Arch / Port Method
-    public static void registerBook(
-        BookPublicationChecked bookPublicationChecked
-    ) {
-        //implement business logic here:
-
-        /** Example 1:  new item 
+    public static void registerBook(BookPublicationChecked bookPublicationChecked) {
         Book book = new Book();
+
+        book.setBookId(bookPublicationChecked.getId());
+        book.setBookName(bookPublicationChecked.getTitle());
+        book.setCategory(bookPublicationChecked.getCategory());
+        book.setSummary(bookPublicationChecked.getSummary());
+        book.setImagePath(bookPublicationChecked.getImagepath());
+        book.setContents(bookPublicationChecked.getContents());
+        book.setStatus(BookStatus.valueOf(bookPublicationChecked.getStatus()));
+        book.setPrice(bookPublicationChecked.getPrice());
+        book.setPublishedAt(new Date());
+        book.setIsBestseller(false);
+
         repository().save(book);
 
         BookRegistered bookRegistered = new BookRegistered(book);
         bookRegistered.publishAfterCommit();
-        */
-
-        /** Example 2:  finding and process
-        
-
-        repository().findById(bookPublicationChecked.get???()).ifPresent(book->{
-            
-            book // do something
-            repository().save(book);
-
-            BookRegistered bookRegistered = new BookRegistered(book);
-            bookRegistered.publishAfterCommit();
-
-         });
-        */
-
     }
-
     //>>> Clean Arch / Port Method
-    //<<< Clean Arch / Port Method
+
     public static void markAsBestseller(PointDeducted pointDeducted) {
-        //implement business logic here:
-
-        /** Example 1:  new item 
-        Book book = new Book();
-        repository().save(book);
-
-        MarkedAsBestseller markedAsBestseller = new MarkedAsBestseller(book);
-        markedAsBestseller.publishAfterCommit();
-        */
-
-        /** Example 2:  finding and process
-        
-
-        repository().findById(pointDeducted.get???()).ifPresent(book->{
-            
-            book // do something
-            repository().save(book);
-
-            MarkedAsBestseller markedAsBestseller = new MarkedAsBestseller(book);
-            markedAsBestseller.publishAfterCommit();
-
-         });
-        */
-
+        // 필요 시 작성
     }
-    //>>> Clean Arch / Port Method
-
 }
 //>>> DDD / Aggregate Root
