@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bookmanagement
+  name: aiservice
   labels:
-    app: bookmanagement
+    app: aiservice
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: bookmanagement
+      app: aiservice
   template:
     metadata:
       labels:
-        app: bookmanagement
+        app: aiservice
     spec:
       containers:
-        - name: bookmanagement
-          image: "username/bookmanagement:latest"
+        - name: aiservice
+          image: "username/aiservice:latest"  # TODO: username을 Docker Hub ID로 수정
           ports:
             - containerPort: 8080
           readinessProbe:
