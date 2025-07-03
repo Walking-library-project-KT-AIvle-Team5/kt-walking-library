@@ -13,8 +13,7 @@ import miniprojectver.domain.*;
 import miniprojectver.service.SubscribeManagementService;
 
 @RestController
-@RequestMapping(value="/subscribeManagements")
-@Transactional
+@RequestMapping("/subscribeManagements")
 public class SubscribeManagementController {
 
     @Autowired
