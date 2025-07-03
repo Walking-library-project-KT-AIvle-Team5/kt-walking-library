@@ -3,7 +3,7 @@ server:
 
 openai:
   api: 
-    key : "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"
+    key : "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"
 
 
 spring:

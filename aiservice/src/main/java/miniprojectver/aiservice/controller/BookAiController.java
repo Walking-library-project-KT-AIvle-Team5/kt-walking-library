@@ -1,26 +1,38 @@
 package miniprojectver.aiservice.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
+import miniprojectver.aiservice.service.TextSummarizationService;
+import miniprojectver.aiservice.service.BookCategoryClassificationService;
+import miniprojectver.aiservice.service.PriceCalculationService;
+import miniprojectver.aiservice.controller.dto.BookCategoryRequest;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/ai")
 public class BookAiController {
 
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
-        return new ResponseEntity<>("AI Service is running!", HttpStatus.OK);
+    @Autowired
+    private TextSummarizationService summarizationService;
+
+    @Autowired
+    private BookCategoryClassificationService categoryClassificationService;
+
+    @Autowired
+    private PriceCalculationService priceCalculationService;
+
+    @PostMapping("/summarize")
+    public String summarizeText(@RequestBody String text) {
+        return summarizationService.summarize(text);
     }
 
-}
+    @PostMapping("/classify-category")
+    public String classifyCategory(@RequestBody BookCategoryRequest request) {
+        return categoryClassificationService.classifyCategory(request.getTitle(), request.getAuthor(), request.getSummary());
+    }
 
-@Autowired
-private TextSummarizationService textSummarizationService;
-
-@PostMapping("/ai/summarize")
-public ResponseEntity<String> summarizeText(@RequestBody Map<String, String> request) {
-    String text = request.get("text");
-    String summary = textSummarizationService.summarize(text);
-    return ResponseEntity.ok(summary);
+    @PostMapping("/calculate-price")
+    public String calculatePrice() {
+        return priceCalculationService.calculatePrice();
+    }
 }

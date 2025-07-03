@@ -6,6 +6,8 @@ import com.theokanning.openai.image.Image;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration; // ⭐ 추가
+
 @Service
 public class ImageGenerationService {
 
@@ -13,7 +15,8 @@ public class ImageGenerationService {
     private String openaiApiKey;
 
     public String generateCoverImage(String title, String author) {
-        OpenAiService service = new OpenAiService(openaiApiKey);
+        // ✅ Timeout 60초 설정
+        OpenAiService service = new OpenAiService(openaiApiKey, Duration.ofSeconds(60));
 
         CreateImageRequest request = CreateImageRequest.builder()
                 .prompt("Book cover for '" + title + "' by " + author)
@@ -24,4 +27,4 @@ public class ImageGenerationService {
         Image image = service.createImage(request).getData().get(0);
         return image.getUrl();
     }
-}
+} 

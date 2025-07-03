@@ -19,8 +19,8 @@ public class TextSummarizationService {
     }
 
     public String summarize(String text) {
-        ChatMessage systemMessage = new ChatMessage("system", "You are a helpful assistant that summarizes text in Korean.");
-        ChatMessage userMessage = new ChatMessage("user", "다음 글을 한국어로 간결하게 요약해줘:\n" + text);
+        ChatMessage systemMessage = new ChatMessage("system", "You are a helpful assistant that summarizes Korean text concisely.");
+        ChatMessage userMessage = new ChatMessage("user", "다음 내용을 한국어로 3줄 이내로 요약해주세요:\n" + text);
 
         ChatCompletionRequest request = ChatCompletionRequest.builder()
                 .model("gpt-3.5-turbo")
@@ -28,6 +28,6 @@ public class TextSummarizationService {
                 .build();
 
         ChatCompletionResult result = openAiService.createChatCompletion(request);
-        return result.getChoices().get(0).getMessage().getContent();
+        return result.getChoices().get(0).getMessage().getContent().trim();
     }
 }
