@@ -80,3 +80,4 @@ spring:
         event-out:
           destination: miniprojectver
           contentType: application/json
+
