@@ -26,27 +26,35 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody SignUpRequestDto requestDto) {
         
+        YesNo isKt;
+        String customerInput = Optional.ofNullable(requestDto.getIsKtCustomer()).orElse("").toUpperCase();
+
+        if ("Y".equals(customerInput) || "YES".equals(customerInput) || "TRUE".equals(customerInput)) {
+            isKt = YesNo.YES;
+        } else if ("N".equals(customerInput) || "NO".equals(customerInput) || "FALSE".equals(customerInput) || customerInput.isEmpty()) {
+            isKt = YesNo.NO;
+        } else {
+            return ResponseEntity.badRequest().body("isKtCustomer 필드는 'Y', 'N', 'YES', 'NO', 'true', 'false' 중 하나여야 합니다.");
+        }
+
         Member member = new Member();
         member.setLoginId(requestDto.getLoginId());
         member.setName(requestDto.getName());
         member.setRole(requestDto.getRole());
-        member.setStatus(requestDto.getStatus());
-
-        // --- 이 부분이 에러를 해결하는 핵심 로직입니다 ---
-        // DTO로부터 받은 Boolean 값을 YesNo Enum 타입으로 변환합니다.
-        YesNo isKt = (requestDto.getIsKtCustomer() != null && requestDto.getIsKtCustomer()) 
-                        ? YesNo.YES 
-                        : YesNo.NO;
-        member.setIsKtCustomer(isKt); // 변환된 Enum 값을 설정합니다.
-        // ---------------------------------------------
+        member.setIsKtCustomer(isKt); 
 
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
         member.setPassword(encodedPassword);
 
         Member savedMember = memberRepository.save(member);
+        
+        // ✅ [삭제] 중복되는 이벤트 발행 로직을 제거합니다.
+        // MemberSignedUp memberSignedUp = new MemberSignedUp(savedMember);
+        // memberSignedUp.publishAfterCommit();
+
         return ResponseEntity.ok(savedMember);
     }
-
+    
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequest) {
         Optional<Member> optionalMember = memberRepository.findByLoginId(loginRequest.getLoginId());
@@ -58,5 +66,25 @@ public class AuthController {
             }
         }
         return ResponseEntity.status(401).body("로그인 정보가 올바르지 않습니다.");
+    }
+    
+    @PostMapping("/members/{id}/verify-kt")
+    public ResponseEntity<?> verifyKtCustomer(@PathVariable Long id) {
+        Optional<Member> optionalMember = memberRepository.findById(id);
+
+        if (optionalMember.isPresent()) {
+            Member member = optionalMember.get();
+            
+            if (member.getIsKtCustomer() == YesNo.NO) {
+                return ResponseEntity.badRequest().body("KT 고객으로 등록된 사용자가 아니므로 인증을 진행할 수 없습니다.");
+            }
+            
+            member.setIsKtCustomer(YesNo.YES);
+            Member updatedMember = memberRepository.save(member);
+            
+            return ResponseEntity.ok(updatedMember);
+        } else {
+            return ResponseEntity.status(404).body("사용자를 찾을 수 없습니다.");
+        }
     }
 }
