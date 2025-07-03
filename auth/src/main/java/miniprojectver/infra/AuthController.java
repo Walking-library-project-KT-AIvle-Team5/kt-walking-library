@@ -47,10 +47,6 @@ public class AuthController {
         member.setPassword(encodedPassword);
 
         Member savedMember = memberRepository.save(member);
-        
-        // ✅ [삭제] 중복되는 이벤트 발행 로직을 제거합니다.
-        // MemberSignedUp memberSignedUp = new MemberSignedUp(savedMember);
-        // memberSignedUp.publishAfterCommit();
 
         return ResponseEntity.ok(savedMember);
     }
