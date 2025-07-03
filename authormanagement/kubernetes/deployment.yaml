@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: authormanagement
-          image: "username/authormanagement:latest"
+          image: "bbson50/authormanagement:latest"
           ports:
             - containerPort: 8080
           readinessProbe:

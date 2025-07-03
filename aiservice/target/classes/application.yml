@@ -2,7 +2,8 @@ server:
   port: 8080
 
 openai:
-  api:
+  api: 
+    key : "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"
 
 
 spring:
@@ -51,7 +52,7 @@ logging:
 
 
 server:
-  port: 8089
+  port: 8088
 
 ---
 

@@ -1,4 +1,11 @@
+/workspace/kt-walking-library/aiservice/src/main/java/miniprojectver/aiservice/controller/dto/BookCategoryRequest.java
+/workspace/kt-walking-library/aiservice/src/main/java/miniprojectver/aiservice/service/TextSummarizationService.java
+/workspace/kt-walking-library/aiservice/src/main/java/miniprojectver/aiservice/service/SubscriptionService.java
+/workspace/kt-walking-library/aiservice/src/main/java/miniprojectver/aiservice/service/BookCategoryClassificationService.java
 /workspace/kt-walking-library/aiservice/src/main/java/miniprojectver/aiservice/AiServiceApplication.java
 /workspace/kt-walking-library/aiservice/src/main/java/miniprojectver/aiservice/controller/AiController.java
 /workspace/kt-walking-library/aiservice/src/main/java/miniprojectver/aiservice/controller/BookAiController.java
+/workspace/kt-walking-library/aiservice/src/main/java/miniprojectver/aiservice/service/PriceCalculationService.java
+/workspace/kt-walking-library/aiservice/src/main/java/miniprojectver/aiservice/controller/BookCategoryController.java
+/workspace/kt-walking-library/aiservice/src/main/java/miniprojectver/aiservice/controller/SubscriptionController.java
 /workspace/kt-walking-library/aiservice/src/main/java/miniprojectver/aiservice/service/ImageGenerationService.java
