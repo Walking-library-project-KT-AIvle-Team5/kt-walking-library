@@ -21,11 +21,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .cors().disable()
-            .csrf().disable();
-
-        // ✅ Spring Security 5.x 방식: authorizeRequests() 사용
-        http
-            .authorizeRequests()
+            .csrf().disable()
+            .authorizeRequests() // ✅ 여기 수정
                 .antMatchers("/auth/signup").permitAll()
                 .anyRequest().authenticated()
             .and()
@@ -33,8 +30,8 @@ public class SecurityConfig {
                 .loginProcessingUrl("/auth/login")
                 .successHandler((request, response, authentication) -> {
                     response.setStatus(200);
-                    response.setContentType("application/json");
                     response.getWriter().write("{\"message\": \"Login successful!\"}");
+                    response.setContentType("application/json");
                 })
                 .failureHandler((request, response, exception) -> {
                     response.sendError(401, "Invalid username or password");
@@ -44,3 +41,4 @@ public class SecurityConfig {
         return http.build();
     }
 }
+
