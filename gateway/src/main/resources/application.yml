@@ -12,27 +12,34 @@ spring:
         - id: auth
           uri: http://localhost:8082
           predicates:
-            - Path=/auth/**, 
+            - Path=/auth/**
         - id: dashboard
           uri: http://localhost:8083
-          predicates:
-            - Path=, /pointViews/**, /fetchSubscriberLists/**, /authorStatistics/**
+          predicates: # ✅ [수정] 각 경로를 별도의 라인으로 분리
+            - Path=/pointViews/**
+            - Path=/fetchSubscriberLists/**
+            - Path=/authorStatistics/**
         - id: bookmanagement
           uri: http://localhost:8084
-          predicates:
-            - Path=/books/**, /manuscripts/**, 
+          predicates: # ✅ [수정] 각 경로를 별도의 라인으로 분리
+            - Path=/books/**
+            - Path=/manuscripts/**
         - id: pointmanagement
           uri: http://localhost:8085
           predicates:
-            - Path=/points/**, 
+            - Path=/points/**
         - id: subscribermanagement
           uri: http://localhost:8086
-          predicates:
-            - Path=/subscribeManagements/**, /readingManagements/**, /pointRequestManagements/**, /bookPurchaseManagements/**, 
+          predicates: # ✅ [수정] 각 경로를 별도의 라인으로 분리
+            - Path=/subscribeManagements/**
+            - Path=/readingManagements/**
+            - Path=/pointRequestManagements/**
+            - Path=/bookPurchaseManagements/**
         - id: libraryplatform
           uri: http://localhost:8087
-          predicates:
-            - Path=/bookPublications/**, /platformManagements/**,
+          predicates: # ✅ [수정] 각 경로를 별도의 라인으로 분리
+            - Path=/bookPublications/**
+            - Path=/platformManagements/**
         - id: aiservice
           uri: http://localhost:8089
           predicates:
@@ -40,7 +47,7 @@ spring:
         - id: authormanagement
           uri: http://localhost:8090
           predicates:
-            - Path=/authors/**, 
+            - Path=/authors/**
         - id: frontend
           uri: http://localhost:8080
           predicates:
@@ -68,31 +75,38 @@ spring:
         - id: auth
           uri: http://auth:8080
           predicates:
-            - Path=/auth/**, 
+            - Path=/auth/**
         - id: dashboard
           uri: http://dashboard:8080
-          predicates:
-            - Path=, 
+          predicates: # ✅ [수정] 각 경로를 별도의 라인으로 분리
+            - Path=/pointViews/**
+            - Path=/fetchSubscriberLists/**
+            - Path=/authorStatistics/**
         - id: bookmanagement
           uri: http://bookmanagement:8080
-          predicates:
-            - Path=/books/**, /manuscripts/**, 
+          predicates: # ✅ [수정] 각 경로를 별도의 라인으로 분리
+            - Path=/books/**
+            - Path=/manuscripts/**
         - id: pointmanagement
           uri: http://pointmanagement:8080
           predicates:
-            - Path=/points/**, 
+            - Path=/points/**
         - id: subscribermanagement
           uri: http://subscribermanagement:8080
-          predicates:
-            - Path=/subscribeManagements/**, /readingManagements/**, /pointRequestManagements/**, /bookPurchaseManagements/**, 
+          predicates: # ✅ [수정] 각 경로를 별도의 라인으로 분리
+            - Path=/subscribeManagements/**
+            - Path=/readingManagements/**
+            - Path=/pointRequestManagements/**
+            - Path=/bookPurchaseManagements/**
         - id: libraryplatform
           uri: http://libraryplatform:8080
-          predicates:
-            - Path=/bookPublications/**, /platformManagements/**, 
+          predicates: # ✅ [수C정] 각 경로를 별도의 라인으로 분리
+            - Path=/bookPublications/**
+            - Path=/platformManagements/**
         - id: authormanagement
           uri: http://authormanagement:8080
           predicates:
-            - Path=/authors/**, 
+            - Path=/authors/**
         - id: frontend
           uri: http://frontend:8080
           predicates:
