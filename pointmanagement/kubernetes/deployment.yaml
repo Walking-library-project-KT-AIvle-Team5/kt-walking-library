@@ -13,11 +13,10 @@ spec:
     metadata:
       labels:
         app: pointmanagement
-        sidecar.istio.io/inject: "true"
     spec:
       containers:
         - name: pointmanagement
-          image: project07.azurecr.io/pointmanagement:latest
+          image: "username/pointmanagement:latest"
           ports:
             - containerPort: 8080
           readinessProbe:
