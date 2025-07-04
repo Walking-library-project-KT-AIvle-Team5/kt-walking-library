@@ -97,30 +97,6 @@ AI 서비스는 `curl` 명령어를 통해 직접 테스트할 수 있습니다.
 
 ---
 
-## 🚀 배포 및 운영 (Deployment & Operations)
-
-### Kubernetes 배포 (Kubernetes Deployment)
-모든 마이크로서비스는 컨테이너화되어 **Azure Kubernetes Service(AKS)** 클러스터에 배포 및 운영됩니다.
-<div align="center">
-  <img src="docs/images/22.png" alt="Kubernetes Deployment Status" width="800"/>
-</div>
-
-### CI/CD 파이프라인 (CI/CD Pipeline)
-**GitHub Actions**를 사용하여 소스 코드 변경 시 자동으로 빌드, 컨테이너 이미지 생성, 쿠버네티스 배포가 이루어지는 CI/CD 파이프라인을 구축했습니다.
-<div align="center">
-  <img src="docs/images/25.png" alt="CI/CD Pipeline" width="800"/>
-</div>
-
-### 통합 모니터링 및 로깅 (Monitoring & Logging)
-- **Prometheus**와 **Grafana**를 이용해 서비스 상태를 실시간으로 모니터링합니다.
-- **Loki**를 통해 분산된 마이크로서비스의 로그를 중앙에서 통합 조회 및 관리합니다.
-<div align="center">
-  <img src="docs/images/23.png" alt="Monitoring Dashboard (Grafana)" width="800"/>
-  <br/>
-  <img src="docs/images/24.png" alt="Log Viewer (Loki)" width="800"/>
-</div>
-
----
 
 ## 👥 팀원 및 역할 (Team & Roles)
 
