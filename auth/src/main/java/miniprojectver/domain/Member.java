@@ -23,6 +23,10 @@ public class Member {
     public void onPostPersist(){
         MemberSignedUp memberSignedUp = new MemberSignedUp();
         BeanUtils.copyProperties(this, memberSignedUp);
+
+        // ✅ [추가] loginId 값을 이벤트의 userId 필드에 수동으로 설정합니다.
+        memberSignedUp.setUserId(this.getLoginId());
+
         memberSignedUp.publishAfterCommit();
     }
 

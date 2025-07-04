@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: auth
-          image: "username/auth:latest"
+          image: "bbson50/auth:latest"
           ports:
             - containerPort: 8080
           readinessProbe:
