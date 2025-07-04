@@ -18,6 +18,17 @@ dist/
 *.log
 .env
 aws/
+
+
+aiservice/target/
+auth/target/
+authormanagement/target/
+bookmanagement/target/
+dashboard/target/
+gateway/target/
+libraryplatform/target/
+pointmanagement/target/
+subscribermanagement/target/
 # ---------------------------
 # ☕ Java & Maven
 # ---------------------------
