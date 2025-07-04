@@ -13,10 +13,11 @@ spec:
     metadata:
       labels:
         app: libraryplatform
+        sidecar.istio.io/inject: "true"
     spec:
       containers:
         - name: libraryplatform
-          image: "bbson50/libraryplatform:latest"
+          image: project07.azurecr.io/libraryplatform:latest
           ports:
             - containerPort: 8080
           readinessProbe:

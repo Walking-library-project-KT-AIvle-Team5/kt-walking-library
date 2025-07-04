@@ -13,10 +13,11 @@ spec:
     metadata:
       labels:
         app: subscribermanagement
+        sidecar.istio.io/inject: "true"
     spec:
       containers:
         - name: subscribermanagement
-          image: "bbson50/subscribermanagement:latest"
+          image: project07.azurecr.io/subscribermanagement:latest
           ports:
             - containerPort: 8080
           readinessProbe:

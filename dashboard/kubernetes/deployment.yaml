@@ -13,10 +13,11 @@ spec:
     metadata:
       labels:
         app: dashboard
+        sidecar.istio.io/inject: "true"
     spec:
       containers:
         - name: dashboard
-          image: "bbson50/dashboard:latest"
+          image: project07.azurecr.io/dashboard:latest
           ports:
             - containerPort: 8080
           readinessProbe:

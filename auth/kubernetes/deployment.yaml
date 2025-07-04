@@ -13,10 +13,11 @@ spec:
     metadata:
       labels:
         app: auth
+        sidecar.istio.io/inject: "true"
     spec:
       containers:
         - name: auth
-          image: "bbson50/auth:latest"
+          image: project07.azurecr.io/auth:latest
           ports:
             - containerPort: 8080
           readinessProbe:

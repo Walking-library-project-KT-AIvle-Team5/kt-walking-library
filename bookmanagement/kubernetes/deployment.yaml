@@ -13,10 +13,11 @@ spec:
     metadata:
       labels:
         app: bookmanagement
+        sidecar.istio.io/inject: "true"
     spec:
       containers:
         - name: bookmanagement
-          image: "bbson50/bookmanagement:latest"
+          image: project07.azurecr.io/bookmanagement:latest
           ports:
             - containerPort: 8080
           readinessProbe:

@@ -1,0 +1,13 @@
+miniprojectver/infra/AuthorHateoasProcessor.class
+miniprojectver/domain/AuthorDeleted.class
+miniprojectver/infra/AbstractEvent$1.class
+miniprojectver/infra/AuthorController.class
+miniprojectver/config/kafka/KafkaProcessor.class
+miniprojectver/infra/AbstractEvent.class
+miniprojectver/domain/AuthorRegistrationRequested.class
+miniprojectver/infra/PolicyHandler.class
+miniprojectver/domain/Author.class
+miniprojectver/domain/AuthorRepository.class
+miniprojectver/domain/RegistrationApproved.class
+miniprojectver/AuthormanagementApplication.class
+miniprojectver/domain/RegistrationDenied.class

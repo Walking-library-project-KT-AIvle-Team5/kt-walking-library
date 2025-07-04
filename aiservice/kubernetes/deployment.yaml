@@ -13,10 +13,11 @@ spec:
     metadata:
       labels:
         app: aiservice
+        sidecar.istio.io/inject: "true"
     spec:
       containers:
         - name: aiservice
-          image: "username/aiservice:latest"  # TODO: username을 Docker Hub ID로 수정
+          image: project07.azurecr.io/aiservice:latest
           ports:
             - containerPort: 8080
           readinessProbe:
