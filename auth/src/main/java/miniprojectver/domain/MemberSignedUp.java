@@ -1,7 +1,10 @@
 package miniprojectver.domain;
 
 import miniprojectver.infra.AbstractEvent;
+import lombok.*;
 
+
+@Setter
 public class MemberSignedUp extends AbstractEvent {
 
     private Long id;

@@ -16,6 +16,7 @@ import miniprojectver.LibraryplatformApplication;
 import miniprojectver.domain.PaymentRecommendationMessageSent;
 import miniprojectver.domain.SubscriptionStatusChecked;
 
+import java.math.BigDecimal;
 
 import miniprojectver.domain.PointUseFailed;
 
@@ -82,6 +83,8 @@ public static void checkSubscription(BookPurchaseRequested bookPurchaseRequested
     SubscriptionStatusChecked event = new SubscriptionStatusChecked();
     event.setUserId(userId);
     event.setIsSubscribed(isSubscribed);
+    event.setBookId(bookPurchaseRequested.getBookId());
+    event.setPrice((BigDecimal) bookPurchaseRequested.getPrice());
     event.publishAfterCommit();
 }
 
